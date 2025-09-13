@@ -210,6 +210,68 @@ export type Database = {
           },
         ]
       }
+      collector_profiles: {
+        Row: {
+          collection_history_summary: Json | null
+          collection_zones: Json | null
+          collector_id: string
+          created_at: string
+          equipment_owned: Json | null
+          experience_years: number | null
+          id: string
+          offline_sync_enabled: boolean | null
+          preferred_collection_times: Json | null
+          sms_notifications_enabled: boolean | null
+          specializations: string[] | null
+          sustainability_score: number | null
+          training_certificates: Json | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          collection_history_summary?: Json | null
+          collection_zones?: Json | null
+          collector_id: string
+          created_at?: string
+          equipment_owned?: Json | null
+          experience_years?: number | null
+          id?: string
+          offline_sync_enabled?: boolean | null
+          preferred_collection_times?: Json | null
+          sms_notifications_enabled?: boolean | null
+          specializations?: string[] | null
+          sustainability_score?: number | null
+          training_certificates?: Json | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          collection_history_summary?: Json | null
+          collection_zones?: Json | null
+          collector_id?: string
+          created_at?: string
+          equipment_owned?: Json | null
+          experience_years?: number | null
+          id?: string
+          offline_sync_enabled?: boolean | null
+          preferred_collection_times?: Json | null
+          sms_notifications_enabled?: boolean | null
+          specializations?: string[] | null
+          sustainability_score?: number | null
+          training_certificates?: Json | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collector_profiles_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       facilities: {
         Row: {
           accepted_waste_types:
@@ -413,6 +475,164 @@ export type Database = {
           },
         ]
       }
+      lab_technician_profiles: {
+        Row: {
+          created_at: string
+          equipment_certifications: Json | null
+          id: string
+          laboratory_id: string | null
+          qualifications: Json | null
+          signature_image_url: string | null
+          specializations: string[] | null
+          technician_id: string
+          test_quotas: Json | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          equipment_certifications?: Json | null
+          id?: string
+          laboratory_id?: string | null
+          qualifications?: Json | null
+          signature_image_url?: string | null
+          specializations?: string[] | null
+          technician_id: string
+          test_quotas?: Json | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          equipment_certifications?: Json | null
+          id?: string
+          laboratory_id?: string | null
+          qualifications?: Json | null
+          signature_image_url?: string | null
+          specializations?: string[] | null
+          technician_id?: string
+          test_quotas?: Json | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lab_technician_profiles_laboratory_id_fkey"
+            columns: ["laboratory_id"]
+            isOneToOne: false
+            referencedRelation: "laboratories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lab_technician_profiles_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      laboratories: {
+        Row: {
+          accreditations: Json | null
+          address: string
+          capacity_per_day: number | null
+          contact_info: Json | null
+          created_at: string
+          equipment_list: Json | null
+          id: string
+          is_active: boolean | null
+          lab_code: string
+          name: string
+          operating_hours: Json | null
+          test_capabilities: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          accreditations?: Json | null
+          address: string
+          capacity_per_day?: number | null
+          contact_info?: Json | null
+          created_at?: string
+          equipment_list?: Json | null
+          id?: string
+          is_active?: boolean | null
+          lab_code: string
+          name: string
+          operating_hours?: Json | null
+          test_capabilities?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          accreditations?: Json | null
+          address?: string
+          capacity_per_day?: number | null
+          contact_info?: Json | null
+          created_at?: string
+          equipment_list?: Json | null
+          id?: string
+          is_active?: boolean | null
+          lab_code?: string
+          name?: string
+          operating_hours?: Json | null
+          test_capabilities?: string[] | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      manufacturer_profiles: {
+        Row: {
+          certifications: Json | null
+          company_name: string
+          created_at: string
+          export_licenses: Json | null
+          facility_locations: Json | null
+          id: string
+          manufacturer_id: string
+          product_lines: string[] | null
+          production_capacity: Json | null
+          quality_standards: string[] | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          certifications?: Json | null
+          company_name: string
+          created_at?: string
+          export_licenses?: Json | null
+          facility_locations?: Json | null
+          id?: string
+          manufacturer_id: string
+          product_lines?: string[] | null
+          production_capacity?: Json | null
+          quality_standards?: string[] | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          certifications?: Json | null
+          company_name?: string
+          created_at?: string
+          export_licenses?: Json | null
+          facility_locations?: Json | null
+          id?: string
+          manufacturer_id?: string
+          product_lines?: string[] | null
+          production_capacity?: Json | null
+          quality_standards?: string[] | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "manufacturer_profiles_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       processing_steps: {
         Row: {
           batch_id: string | null
@@ -489,42 +709,72 @@ export type Database = {
       }
       profiles: {
         Row: {
+          address: string | null
+          certification_expiry: string | null
           created_at: string
           id: string
           is_verified: boolean | null
           language_preference: string | null
+          last_login: string | null
+          license_number: string | null
           name: string | null
           organization: string | null
+          permissions: Json | null
           phone: string | null
           role: Database["public"]["Enums"]["user_role"]
+          settings: Json | null
           updated_at: string
           user_id: string
+          verification_documents: Json | null
+          verification_status: string | null
+          verified_at: string | null
+          verified_by: string | null
           ward_id: string | null
         }
         Insert: {
+          address?: string | null
+          certification_expiry?: string | null
           created_at?: string
           id?: string
           is_verified?: boolean | null
           language_preference?: string | null
+          last_login?: string | null
+          license_number?: string | null
           name?: string | null
           organization?: string | null
+          permissions?: Json | null
           phone?: string | null
           role?: Database["public"]["Enums"]["user_role"]
+          settings?: Json | null
           updated_at?: string
           user_id: string
+          verification_documents?: Json | null
+          verification_status?: string | null
+          verified_at?: string | null
+          verified_by?: string | null
           ward_id?: string | null
         }
         Update: {
+          address?: string | null
+          certification_expiry?: string | null
           created_at?: string
           id?: string
           is_verified?: boolean | null
           language_preference?: string | null
+          last_login?: string | null
+          license_number?: string | null
           name?: string | null
           organization?: string | null
+          permissions?: Json | null
           phone?: string | null
           role?: Database["public"]["Enums"]["user_role"]
+          settings?: Json | null
           updated_at?: string
           user_id?: string
+          verification_documents?: Json | null
+          verification_status?: string | null
+          verified_at?: string | null
+          verified_by?: string | null
           ward_id?: string | null
         }
         Relationships: []
