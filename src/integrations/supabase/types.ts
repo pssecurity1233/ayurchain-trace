@@ -529,6 +529,113 @@ export type Database = {
         }
         Relationships: []
       }
+      qr_codes: {
+        Row: {
+          access_count: number
+          batch_id: string | null
+          brand_config: Json | null
+          created_at: string
+          created_by: string
+          custom_data: Json | null
+          expiry_date: string | null
+          hmac_signature: string
+          id: string
+          is_active: boolean
+          last_scanned_at: string | null
+          max_access_count: number | null
+          nonce: string
+          product_name: string
+          qr_code_id: string
+          qr_type: string
+          scan_locations: Json | null
+          security_level: string
+          updated_at: string
+        }
+        Insert: {
+          access_count?: number
+          batch_id?: string | null
+          brand_config?: Json | null
+          created_at?: string
+          created_by: string
+          custom_data?: Json | null
+          expiry_date?: string | null
+          hmac_signature: string
+          id?: string
+          is_active?: boolean
+          last_scanned_at?: string | null
+          max_access_count?: number | null
+          nonce: string
+          product_name: string
+          qr_code_id: string
+          qr_type?: string
+          scan_locations?: Json | null
+          security_level?: string
+          updated_at?: string
+        }
+        Update: {
+          access_count?: number
+          batch_id?: string | null
+          brand_config?: Json | null
+          created_at?: string
+          created_by?: string
+          custom_data?: Json | null
+          expiry_date?: string | null
+          hmac_signature?: string
+          id?: string
+          is_active?: boolean
+          last_scanned_at?: string | null
+          max_access_count?: number | null
+          nonce?: string
+          product_name?: string
+          qr_code_id?: string
+          qr_type?: string
+          scan_locations?: Json | null
+          security_level?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      qr_scan_events: {
+        Row: {
+          id: string
+          qr_code_id: string
+          scan_location: Json | null
+          scan_result: string
+          scanned_at: string
+          scanner_ip: unknown | null
+          scanner_user_agent: string | null
+          scanner_user_id: string | null
+        }
+        Insert: {
+          id?: string
+          qr_code_id: string
+          scan_location?: Json | null
+          scan_result?: string
+          scanned_at?: string
+          scanner_ip?: unknown | null
+          scanner_user_agent?: string | null
+          scanner_user_id?: string | null
+        }
+        Update: {
+          id?: string
+          qr_code_id?: string
+          scan_location?: Json | null
+          scan_result?: string
+          scanned_at?: string
+          scanner_ip?: unknown | null
+          scanner_user_agent?: string | null
+          scanner_user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_qr_scan_events_qr_code"
+            columns: ["qr_code_id"]
+            isOneToOne: false
+            referencedRelation: "qr_codes"
+            referencedColumns: ["qr_code_id"]
+          },
+        ]
+      }
       quality_tests: {
         Row: {
           batch_id: string | null
@@ -1067,7 +1174,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      validate_qr_access: {
+        Args: { p_hmac_signature: string; p_qr_code_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       facility_type:
