@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { Database } from '@/integrations/supabase/types';
 import { Leaf, Users, FlaskConical, Building2, ShieldCheck } from 'lucide-react';
 
 const ProfileSetup = () => {
@@ -43,7 +44,7 @@ const ProfileSetup = () => {
           user_id: user?.id,
           name: profileData.name,
           phone: profileData.phone,
-          role: profileData.role,
+          role: profileData.role as Database['public']['Enums']['user_role'],
           organization: profileData.organization,
           address: profileData.address,
           license_number: profileData.license_number
@@ -64,7 +65,7 @@ const ProfileSetup = () => {
           });
         
         if (collectorError) throw collectorError;
-      } else if (profileData.role === 'lab_technician') {
+      } else if (profileData.role === 'lab') {
         const { error: labError } = await supabase
           .from('lab_technician_profiles')
           .insert({
@@ -109,7 +110,7 @@ const ProfileSetup = () => {
   const getRoleIcon = (role: string) => {
     switch (role) {
       case 'collector': return <Leaf className="h-5 w-5" />;
-      case 'lab_technician': return <FlaskConical className="h-5 w-5" />;
+      case 'lab': return <FlaskConical className="h-5 w-5" />;
       case 'manufacturer': return <Building2 className="h-5 w-5" />;
       case 'admin': return <ShieldCheck className="h-5 w-5" />;
       default: return <Users className="h-5 w-5" />;
@@ -154,7 +155,7 @@ const ProfileSetup = () => {
                   <SelectValue placeholder="Select your role" />
                 </SelectTrigger>
                 <SelectContent>
-                  {['collector', 'lab_technician', 'manufacturer', 'consumer'].map((role) => (
+                  {['collector', 'lab', 'manufacturer', 'consumer'].map((role) => (
                     <SelectItem key={role} value={role}>
                       <div className="flex items-center gap-2">
                         {getRoleIcon(role)}
