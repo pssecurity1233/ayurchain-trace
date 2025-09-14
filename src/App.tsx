@@ -16,7 +16,10 @@ import CollectorDashboard from "./pages/CollectorDashboard";
 import LabDashboard from "./pages/LabDashboard";
 import ManufacturerDashboard from "./pages/ManufacturerDashboard";
 import ConsumerDashboard from "./pages/ConsumerDashboard";
+import ProcessorDashboard from "./pages/ProcessorDashboard";
+import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
+import ProfileSetup from "./pages/ProfileSetup";
 
 const queryClient = new QueryClient();
 
@@ -35,19 +38,23 @@ const AppContent = () => {
   }
 
   const getDashboardRoute = () => {
+    if (!user || !userRole) return '/dashboard';
+    
     switch (userRole) {
       case 'collector':
         return '/collector-dashboard';
-      case 'lab_technician':
+      case 'lab':
         return '/lab-dashboard';
       case 'manufacturer':
         return '/manufacturer-dashboard';
       case 'consumer':
         return '/consumer-dashboard';
+      case 'processor':
+        return '/processor-dashboard';
       case 'admin':
-        return '/dashboard';
+        return '/admin-dashboard';
       default:
-        return '/';
+        return '/dashboard';
     }
   };
 
