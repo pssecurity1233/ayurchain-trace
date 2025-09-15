@@ -14,6 +14,108 @@ export type Database = {
   }
   public: {
     Tables: {
+      analytics_events: {
+        Row: {
+          created_at: string | null
+          event_type: string
+          id: string
+          ip_address: unknown | null
+          properties: Json | null
+          session_id: string | null
+          timestamp: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          event_type: string
+          id?: string
+          ip_address?: unknown | null
+          properties?: Json | null
+          session_id?: string | null
+          timestamp?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          event_type?: string
+          id?: string
+          ip_address?: unknown | null
+          properties?: Json | null
+          session_id?: string | null
+          timestamp?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      api_logs: {
+        Row: {
+          endpoint: string
+          id: string
+          ip_address: unknown | null
+          method: string
+          request_body: Json | null
+          response_status: number | null
+          response_time_ms: number | null
+          timestamp: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          endpoint: string
+          id?: string
+          ip_address?: unknown | null
+          method: string
+          request_body?: Json | null
+          response_status?: number | null
+          response_time_ms?: number | null
+          timestamp?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          endpoint?: string
+          id?: string
+          ip_address?: unknown | null
+          method?: string
+          request_body?: Json | null
+          response_status?: number | null
+          response_time_ms?: number | null
+          timestamp?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      api_rate_limits: {
+        Row: {
+          created_at: string | null
+          endpoint: string
+          id: string
+          requests_count: number | null
+          user_id: string | null
+          window_start: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          endpoint: string
+          id?: string
+          requests_count?: number | null
+          user_id?: string | null
+          window_start?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          endpoint?: string
+          id?: string
+          requests_count?: number | null
+          user_id?: string | null
+          window_start?: string | null
+        }
+        Relationships: []
+      }
       audit_logs: {
         Row: {
           action: string
@@ -53,45 +155,204 @@ export type Database = {
         }
         Relationships: []
       }
+      batch_qr_codes: {
+        Row: {
+          batch_id: string | null
+          generated_at: string | null
+          generated_by: string | null
+          id: string
+          is_active: boolean | null
+          provenance_hash: string | null
+          qr_code_data: string
+          qr_image_url: string | null
+          scan_count: number | null
+        }
+        Insert: {
+          batch_id?: string | null
+          generated_at?: string | null
+          generated_by?: string | null
+          id?: string
+          is_active?: boolean | null
+          provenance_hash?: string | null
+          qr_code_data: string
+          qr_image_url?: string | null
+          scan_count?: number | null
+        }
+        Update: {
+          batch_id?: string | null
+          generated_at?: string | null
+          generated_by?: string | null
+          id?: string
+          is_active?: boolean | null
+          provenance_hash?: string | null
+          qr_code_data?: string
+          qr_image_url?: string | null
+          scan_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "batch_qr_codes_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batches"
+            referencedColumns: ["batch_id"]
+          },
+        ]
+      }
+      batch_recalls: {
+        Row: {
+          affected_consumers_notified: boolean | null
+          batch_id: string | null
+          fabric_tx_hash: string | null
+          id: string
+          recall_reason: string
+          recalled_at: string | null
+          recalled_by: string | null
+          regulators_notified: boolean | null
+          severity_level: string | null
+        }
+        Insert: {
+          affected_consumers_notified?: boolean | null
+          batch_id?: string | null
+          fabric_tx_hash?: string | null
+          id?: string
+          recall_reason: string
+          recalled_at?: string | null
+          recalled_by?: string | null
+          regulators_notified?: boolean | null
+          severity_level?: string | null
+        }
+        Update: {
+          affected_consumers_notified?: boolean | null
+          batch_id?: string | null
+          fabric_tx_hash?: string | null
+          id?: string
+          recall_reason?: string
+          recalled_at?: string | null
+          recalled_by?: string | null
+          regulators_notified?: boolean | null
+          severity_level?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "batch_recalls_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batches"
+            referencedColumns: ["batch_id"]
+          },
+        ]
+      }
+      batch_tracking: {
+        Row: {
+          batch_id: string
+          blockchain_hash: string | null
+          created_at: string
+          current_facility_id: string | null
+          current_location: string | null
+          current_owner_id: string | null
+          id: string
+          parent_batch_ids: string[] | null
+          quality_grade: number | null
+          remaining_quantity_kg: number
+          status: string | null
+          total_quantity_kg: number
+          traceability_data: Json | null
+          updated_at: string
+        }
+        Insert: {
+          batch_id: string
+          blockchain_hash?: string | null
+          created_at?: string
+          current_facility_id?: string | null
+          current_location?: string | null
+          current_owner_id?: string | null
+          id?: string
+          parent_batch_ids?: string[] | null
+          quality_grade?: number | null
+          remaining_quantity_kg: number
+          status?: string | null
+          total_quantity_kg: number
+          traceability_data?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          batch_id?: string
+          blockchain_hash?: string | null
+          created_at?: string
+          current_facility_id?: string | null
+          current_location?: string | null
+          current_owner_id?: string | null
+          id?: string
+          parent_batch_ids?: string[] | null
+          quality_grade?: number | null
+          remaining_quantity_kg?: number
+          status?: string | null
+          total_quantity_kg?: number
+          traceability_data?: Json | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "batch_tracking_current_facility_id_fkey"
+            columns: ["current_facility_id"]
+            isOneToOne: false
+            referencedRelation: "processing_facilities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       batches: {
         Row: {
           batch_id: string
           blockchain_tx_hash: string | null
           created_at: string
           finalized_at: string | null
+          manufacturer_id: string | null
           producer_id: string
+          product_name: string | null
           provenance_hash: string | null
           qr_code: string | null
+          quality_grade: number | null
           recall_reason: string | null
           recalled_at: string | null
           species_id: string
           status: string | null
+          total_quantity_kg: number | null
         }
         Insert: {
           batch_id?: string
           blockchain_tx_hash?: string | null
           created_at?: string
           finalized_at?: string | null
+          manufacturer_id?: string | null
           producer_id: string
+          product_name?: string | null
           provenance_hash?: string | null
           qr_code?: string | null
+          quality_grade?: number | null
           recall_reason?: string | null
           recalled_at?: string | null
           species_id: string
           status?: string | null
+          total_quantity_kg?: number | null
         }
         Update: {
           batch_id?: string
           blockchain_tx_hash?: string | null
           created_at?: string
           finalized_at?: string | null
+          manufacturer_id?: string | null
           producer_id?: string
+          product_name?: string | null
           provenance_hash?: string | null
           qr_code?: string | null
+          quality_grade?: number | null
           recall_reason?: string | null
           recalled_at?: string | null
           species_id?: string
           status?: string | null
+          total_quantity_kg?: number | null
         }
         Relationships: []
       }
@@ -269,6 +530,113 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      collectors: {
+        Row: {
+          address: Json
+          bank_details: Json | null
+          certification_status: string | null
+          created_at: string
+          emergency_contact: Json | null
+          full_name: string
+          government_id: string
+          id: string
+          is_active: boolean | null
+          latitude: number | null
+          longitude: number | null
+          phone_number: string
+          registration_number: string
+          specialization_species: string[] | null
+          training_completion_date: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address: Json
+          bank_details?: Json | null
+          certification_status?: string | null
+          created_at?: string
+          emergency_contact?: Json | null
+          full_name: string
+          government_id: string
+          id?: string
+          is_active?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
+          phone_number: string
+          registration_number: string
+          specialization_species?: string[] | null
+          training_completion_date?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address?: Json
+          bank_details?: Json | null
+          certification_status?: string | null
+          created_at?: string
+          emergency_contact?: Json | null
+          full_name?: string
+          government_id?: string
+          id?: string
+          is_active?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
+          phone_number?: string
+          registration_number?: string
+          specialization_species?: string[] | null
+          training_completion_date?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      consumer_scans: {
+        Row: {
+          device_info: Json | null
+          feedback_rating: number | null
+          feedback_text: string | null
+          id: string
+          ip_address: unknown | null
+          latitude: number | null
+          longitude: number | null
+          qr_code_id: string
+          scan_timestamp: string
+          user_agent: string | null
+        }
+        Insert: {
+          device_info?: Json | null
+          feedback_rating?: number | null
+          feedback_text?: string | null
+          id?: string
+          ip_address?: unknown | null
+          latitude?: number | null
+          longitude?: number | null
+          qr_code_id: string
+          scan_timestamp?: string
+          user_agent?: string | null
+        }
+        Update: {
+          device_info?: Json | null
+          feedback_rating?: number | null
+          feedback_text?: string | null
+          id?: string
+          ip_address?: unknown | null
+          latitude?: number | null
+          longitude?: number | null
+          qr_code_id?: string
+          scan_timestamp?: string
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consumer_scans_qr_code_id_fkey"
+            columns: ["qr_code_id"]
+            isOneToOne: false
+            referencedRelation: "qr_codes"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -633,6 +1001,146 @@ export type Database = {
           },
         ]
       }
+      notification_templates: {
+        Row: {
+          active: boolean | null
+          body: string
+          created_at: string | null
+          id: string
+          name: string
+          subject: string | null
+          type: string
+          updated_at: string | null
+          variables: Json | null
+        }
+        Insert: {
+          active?: boolean | null
+          body: string
+          created_at?: string | null
+          id?: string
+          name: string
+          subject?: string | null
+          type: string
+          updated_at?: string | null
+          variables?: Json | null
+        }
+        Update: {
+          active?: boolean | null
+          body?: string
+          created_at?: string | null
+          id?: string
+          name?: string
+          subject?: string | null
+          type?: string
+          updated_at?: string | null
+          variables?: Json | null
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          body: string
+          created_at: string | null
+          delivered_at: string | null
+          error_message: string | null
+          id: string
+          metadata: Json | null
+          sent_at: string | null
+          status: string | null
+          subject: string | null
+          template_id: string | null
+          type: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string | null
+          delivered_at?: string | null
+          error_message?: string | null
+          id?: string
+          metadata?: Json | null
+          sent_at?: string | null
+          status?: string | null
+          subject?: string | null
+          template_id?: string | null
+          type: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string | null
+          delivered_at?: string | null
+          error_message?: string | null
+          id?: string
+          metadata?: Json | null
+          sent_at?: string | null
+          status?: string | null
+          subject?: string | null
+          template_id?: string | null
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "notification_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      processing_facilities: {
+        Row: {
+          address: Json
+          capacity_info: Json | null
+          certifications: Json | null
+          contact_info: Json
+          created_at: string
+          equipment_list: Json | null
+          facility_type: string
+          id: string
+          is_active: boolean | null
+          latitude: number | null
+          license_number: string
+          longitude: number | null
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          address: Json
+          capacity_info?: Json | null
+          certifications?: Json | null
+          contact_info: Json
+          created_at?: string
+          equipment_list?: Json | null
+          facility_type: string
+          id?: string
+          is_active?: boolean | null
+          latitude?: number | null
+          license_number: string
+          longitude?: number | null
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          address?: Json
+          capacity_info?: Json | null
+          certifications?: Json | null
+          contact_info?: Json
+          created_at?: string
+          equipment_list?: Json | null
+          facility_type?: string
+          id?: string
+          is_active?: boolean | null
+          latitude?: number | null
+          license_number?: string
+          longitude?: number | null
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       processing_steps: {
         Row: {
           batch_id: string | null
@@ -704,6 +1212,57 @@ export type Database = {
           issued_by?: string
           provenance_hash?: string | null
           qr_id?: string
+        }
+        Relationships: []
+      }
+      products: {
+        Row: {
+          blockchain_hash: string | null
+          created_at: string
+          expiry_date: string
+          formulation: Json
+          id: string
+          ingredient_batches: Json
+          is_active: boolean | null
+          manufacturer_id: string
+          manufacturing_date: string
+          name: string
+          packaging_info: Json | null
+          product_code: string
+          regulatory_approvals: Json | null
+          updated_at: string
+        }
+        Insert: {
+          blockchain_hash?: string | null
+          created_at?: string
+          expiry_date: string
+          formulation: Json
+          id?: string
+          ingredient_batches: Json
+          is_active?: boolean | null
+          manufacturer_id: string
+          manufacturing_date: string
+          name: string
+          packaging_info?: Json | null
+          product_code: string
+          regulatory_approvals?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          blockchain_hash?: string | null
+          created_at?: string
+          expiry_date?: string
+          formulation?: Json
+          id?: string
+          ingredient_batches?: Json
+          is_active?: boolean | null
+          manufacturer_id?: string
+          manufacturing_date?: string
+          name?: string
+          packaging_info?: Json | null
+          product_code?: string
+          regulatory_approvals?: Json | null
+          updated_at?: string
         }
         Relationships: []
       }
@@ -1424,6 +1983,55 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_audit_log: {
+        Args: {
+          p_action: string
+          p_blockchain_tx_hash?: string
+          p_error_message?: string
+          p_fabric_response?: Json
+          p_record_id?: string
+          p_status?: string
+          p_table_name: string
+          p_user_id?: string
+        }
+        Returns: string
+      }
+      finalize_batch_with_qr: {
+        Args: {
+          p_batch_id: string
+          p_provenance_hash: string
+          p_qr_data: string
+        }
+        Returns: string
+      }
+      generate_batch_qr_code: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      generate_secure_qr_code: {
+        Args: { p_batch_id?: string; p_product_name: string }
+        Returns: {
+          hmac_signature: string
+          nonce: string
+          qr_code_id: string
+        }[]
+      }
+      is_collection_season_valid: {
+        Args: { p_collection_date?: string; p_species_id: string }
+        Returns: boolean
+      }
+      recall_batch: {
+        Args: {
+          p_batch_id: string
+          p_recall_reason: string
+          p_severity_level?: string
+        }
+        Returns: string
+      }
+      validate_collection_location: {
+        Args: { p_latitude: number; p_longitude: number; p_species_id: string }
+        Returns: boolean
+      }
       validate_qr_access: {
         Args: { p_hmac_signature: string; p_qr_code_id: string }
         Returns: boolean
