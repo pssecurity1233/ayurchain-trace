@@ -17,8 +17,10 @@ import LabDashboard from "./pages/LabDashboard";
 import ManufacturerDashboard from "./pages/ManufacturerDashboard";
 import ConsumerDashboard from "./pages/ConsumerDashboard";
 import ProcessorDashboard from "./pages/ProcessorDashboard";
+import RegulatorDashboard from "./pages/RegulatorDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
+import Unauthorized from "./pages/Unauthorized";
 import ProfileSetup from "./pages/ProfileSetup";
 
 const queryClient = new QueryClient();
@@ -38,7 +40,7 @@ const AppContent = () => {
   }
 
   const getDashboardRoute = () => {
-    if (!user || !userRole) return '/dashboard';
+    if (!user || !userRole) return '/';
     
     switch (userRole) {
       case 'collector':
@@ -51,10 +53,12 @@ const AppContent = () => {
         return '/consumer-dashboard';
       case 'processor':
         return '/processor-dashboard';
+      case 'regulator':
+        return '/regulator-dashboard';
       case 'admin':
         return '/admin-dashboard';
       default:
-        return '/dashboard';
+        return '/';
     }
   };
 
@@ -63,12 +67,13 @@ const AppContent = () => {
       {user && <Navigation />}
       <Routes>
         {/* Public Routes */}
+        <Route path="/" element={user ? <Navigate to={getDashboardRoute()} replace /> : <Home />} />
         <Route path="/auth" element={<Auth />} />
-        
-        {/* Protected Routes */}
-        <Route path="/" element={
+        <Route path="/scan" element={<Scanner />} />
+        <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route path="/profile-setup" element={
           <ProtectedRoute>
-            {user ? <Navigate to={getDashboardRoute()} replace /> : <Home />}
+            <ProfileSetup />
           </ProtectedRoute>
         } />
         
@@ -80,7 +85,7 @@ const AppContent = () => {
         } />
         
         <Route path="/lab-dashboard" element={
-          <ProtectedRoute allowedRoles={['lab_technician']}>
+          <ProtectedRoute allowedRoles={['lab']}>
             <LabDashboard />
           </ProtectedRoute>
         } />
@@ -97,19 +102,31 @@ const AppContent = () => {
           </ProtectedRoute>
         } />
         
+        <Route path="/processor-dashboard" element={
+          <ProtectedRoute allowedRoles={['processor']}>
+            <ProcessorDashboard />
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/regulator-dashboard" element={
+          <ProtectedRoute allowedRoles={['regulator']}>
+            <RegulatorDashboard />
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/admin-dashboard" element={
+          <ProtectedRoute allowedRoles={['admin']}>
+            <AdminDashboard />
+          </ProtectedRoute>
+        } />
+        
         <Route path="/dashboard" element={
           <ProtectedRoute allowedRoles={['admin']}>
             <Dashboard />
           </ProtectedRoute>
         } />
         
-        {/* Legacy Routes */}
-        <Route path="/scan" element={
-          <ProtectedRoute>
-            <Scanner />
-          </ProtectedRoute>
-        } />
-        
+        {/* Legacy Routes for backward compatibility */}
         <Route path="/collect" element={
           <ProtectedRoute allowedRoles={['collector']}>
             <Collector />
@@ -117,7 +134,7 @@ const AppContent = () => {
         } />
         
         <Route path="/lab" element={
-          <ProtectedRoute allowedRoles={['lab_technician']}>
+          <ProtectedRoute allowedRoles={['lab']}>
             <Laboratory />
           </ProtectedRoute>
         } />

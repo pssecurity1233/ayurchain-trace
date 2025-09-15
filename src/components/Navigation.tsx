@@ -37,37 +37,47 @@ const Navigation = () => {
       case 'collector':
         return [
           ...baseItems,
-          { path: '/collector-dashboard', icon: Leaf, label: 'My Collections' },
+          { path: '/collector-dashboard', icon: Leaf, label: 'Dashboard' },
           { path: '/collect', icon: QrCode, label: 'New Collection' },
         ];
-      case 'lab_technician':
+      case 'lab':
         return [
           ...baseItems,
-          { path: '/lab-dashboard', icon: FlaskConical, label: 'Lab Tests' },
+          { path: '/lab-dashboard', icon: FlaskConical, label: 'Lab Dashboard' },
           { path: '/lab', icon: BarChart3, label: 'Quality Control' },
         ];
       case 'manufacturer':
         return [
           ...baseItems,
           { path: '/manufacturer-dashboard', icon: Building2, label: 'Manufacturing' },
-          { path: '/scan', icon: Package, label: 'Batch Management' },
+        ];
+      case 'processor':
+        return [
+          ...baseItems,
+          { path: '/processor-dashboard', icon: Package, label: 'Processing' },
         ];
       case 'consumer':
         return [
           ...baseItems,
           { path: '/consumer-dashboard', icon: QrCode, label: 'Scanner' },
-          { path: '/scan', icon: BarChart3, label: 'Product Search' },
+          { path: '/scan', icon: BarChart3, label: 'Scan Product' },
+        ];
+      case 'regulator':
+        return [
+          ...baseItems,
+          { path: '/regulator-dashboard', icon: BarChart3, label: 'Compliance' },
         ];
       case 'admin':
         return [
           ...baseItems,
-          { path: '/dashboard', icon: BarChart3, label: 'Dashboard' },
+          { path: '/admin-dashboard', icon: BarChart3, label: 'Admin Panel' },
           { path: '/scan', icon: QrCode, label: 'Scanner' },
-          { path: '/collect', icon: Leaf, label: 'Collections' },
-          { path: '/lab', icon: FlaskConical, label: 'Laboratory' },
         ];
       default:
-        return baseItems;
+        return [
+          ...baseItems,
+          { path: '/scan', icon: QrCode, label: 'Scan Product' },
+        ];
     }
   };
 
@@ -83,8 +93,20 @@ const Navigation = () => {
 
   const getRoleDisplayName = (role: string) => {
     switch (role) {
-      case 'lab_technician':
+      case 'lab':
         return 'Lab Technician';
+      case 'regulator':
+        return 'Regulator';
+      case 'processor':
+        return 'Processor';
+      case 'manufacturer':
+        return 'Manufacturer';
+      case 'collector':
+        return 'Collector';
+      case 'consumer':
+        return 'Consumer';
+      case 'admin':
+        return 'Administrator';
       default:
         return role?.charAt(0).toUpperCase() + role?.slice(1);
     }

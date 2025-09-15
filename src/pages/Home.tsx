@@ -106,9 +106,9 @@ const Home = () => {
                   </Link>
                 </Button>
                 <Button asChild variant="outline" size="lg" className="text-lg px-8 py-6">
-                  <Link to="/collect">
+                  <Link to="/auth">
                     <Users className="h-5 w-5 mr-2" />
-                    Join as Collector
+                    Login / Register
                   </Link>
                 </Button>
               </div>
@@ -206,9 +206,9 @@ const Home = () => {
               </div>
 
               <Button asChild size="lg" className="text-lg px-8 py-6">
-                <Link to="/dashboard">
+                <Link to="/auth">
                   <BarChart3 className="h-5 w-5 mr-2" />
-                  View Dashboard
+                  Get Started
                   <ArrowRight className="h-4 w-4 ml-2" />
                 </Link>
               </Button>
@@ -261,9 +261,9 @@ const Home = () => {
                 </Link>
               </Button>
               <Button asChild size="lg" variant="outline" className="text-lg px-8 py-6 bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary">
-                <Link to="/collect">
+                <Link to="/auth">
                   <Users className="h-5 w-5 mr-2" />
-                  Become a Collector
+                  Join Our Network
                 </Link>
               </Button>
             </div>
