@@ -2745,6 +2745,10 @@ export type Database = {
         Args: { "": number }
         Returns: string
       }
+      get_system_overview: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
       gettransactionid: {
         Args: Record<PropertyKey, never>
         Returns: unknown
