@@ -63,6 +63,10 @@ const ManufacturerDashboard = () => {
 
       if (batchError) throw batchError;
 
+      console.log('Loaded batches:', batchData);
+      console.log('Current user ID:', user?.id);
+      console.log('Finalized batches:', batchData?.filter(b => b.status === 'finalized'));
+
       setBatches(batchData || []);
 
       // Load QR codes
