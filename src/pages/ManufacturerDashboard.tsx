@@ -191,7 +191,7 @@ const ManufacturerDashboard = () => {
       const { error } = await supabase
         .from('batches')
         .update({ 
-          status: 'completed',
+          status: 'finalized',
           finalized_at: new Date().toISOString()
         })
         .eq('batch_id', batchId);
