@@ -20,6 +20,7 @@ import {
   FlaskConical
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ProvenanceData {
   productId: string;
@@ -91,24 +92,206 @@ const Scanner = () => {
   };
 
   const handleScan = async () => {
-    if (!qrInput.trim()) {
+    const code = qrInput.trim();
+    if (!code) {
       toast.error('Please enter a QR code or product ID');
       return;
     }
 
     setLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      if (qrInput.includes('ASH') || qrInput === 'demo') {
+
+    try {
+      // 1) Try product_qr (primary flow used by manufacturers)
+      const { data: pq, error: pqErr } = await supabase
+        .from('product_qr')
+        .select('*')
+        .eq('qr_id', code)
+        .maybeSingle();
+
+      if (pq) {
+        const { data: batch } = await supabase
+          .from('batches')
+          .select('*')
+          .eq('batch_id', pq.batch_id)
+          .maybeSingle();
+
+        // Try to enrich with one collection event if any
+        let collectionEvent: any = null;
+        if (pq.collection_event_ids && pq.collection_event_ids.length > 0) {
+          const { data: col } = await supabase
+            .from('collection_events')
+            .select('*')
+            .in('id', pq.collection_event_ids as string[])
+            .limit(1);
+          collectionEvent = col?.[0] ?? null;
+        }
+
+        // Latest processing step for this batch
+        const { data: steps } = await supabase
+          .from('processing_steps')
+          .select('*')
+          .eq('batch_id', pq.batch_id)
+          .order('created_at', { ascending: false })
+          .limit(1);
+        const step = steps?.[0] ?? null;
+
+        const pd: ProvenanceData = {
+          productId: pq.qr_id,
+          productName: batch?.product_name || (batch?.species_id ? `${batch.species_id} Product` : 'Ayurvedic Product'),
+          species: {
+            scientific: batch?.species_id || 'N/A',
+            common: batch?.species_id || 'N/A',
+          },
+          collection: {
+            collector: collectionEvent?.collector_id || 'Verified Collector',
+            location: collectionEvent ? `${collectionEvent.latitude}, ${collectionEvent.longitude}` : 'N/A',
+            date: (collectionEvent?.timestamp as string) || new Date().toISOString(),
+            coordinates: [
+              collectionEvent?.latitude ?? 0,
+              collectionEvent?.longitude ?? 0,
+            ],
+            quantity: Number(collectionEvent?.quantity_kg ?? 0),
+          },
+          quality: {
+            tested: batch?.quality_grade != null,
+            lab: 'N/A',
+            purity: Number(batch?.quality_grade ?? 0),
+            certificates: [],
+          },
+          processing: {
+            facility: step?.processor_id || 'Processing Facility',
+            date: (step?.created_at as string) || new Date().toISOString(),
+            method: step?.operation || 'Processing',
+          },
+          blockchain: {
+            txHash: batch?.blockchain_tx_hash || pq.blockchain_tx_hash || 'N/A',
+            verified: Boolean(batch?.blockchain_tx_hash || pq.blockchain_tx_hash),
+          },
+        };
+
+        setProvenanceData(pd);
+        toast.success('Product verified successfully!');
+        return;
+      }
+
+      // 2) Try qr_codes (secure QR system)
+      const { data: qr } = await supabase
+        .from('qr_codes')
+        .select('*')
+        .eq('qr_code_id', code)
+        .maybeSingle();
+
+      if (qr) {
+        const { data: batch } = await supabase
+          .from('batches')
+          .select('*')
+          .eq('batch_id', qr.batch_id)
+          .maybeSingle();
+
+        const { data: steps } = await supabase
+          .from('processing_steps')
+          .select('*')
+          .eq('batch_id', qr.batch_id)
+          .order('created_at', { ascending: false })
+          .limit(1);
+        const step = steps?.[0] ?? null;
+
+        const pd: ProvenanceData = {
+          productId: qr.qr_code_id,
+          productName: batch?.product_name || (batch?.species_id ? `${batch.species_id} Product` : 'Ayurvedic Product'),
+          species: {
+            scientific: batch?.species_id || 'N/A',
+            common: batch?.species_id || 'N/A',
+          },
+          collection: {
+            collector: 'Verified Collector',
+            location: 'N/A',
+            date: new Date(batch?.created_at || new Date().toISOString()).toISOString(),
+            coordinates: [0, 0],
+            quantity: Number(batch?.total_quantity_kg ?? 0),
+          },
+          quality: {
+            tested: batch?.quality_grade != null,
+            lab: 'N/A',
+            purity: Number(batch?.quality_grade ?? 0),
+            certificates: [],
+          },
+          processing: {
+            facility: step?.processor_id || 'Processing Facility',
+            date: (step?.created_at as string) || new Date().toISOString(),
+            method: step?.operation || 'Processing',
+          },
+          blockchain: {
+            txHash: batch?.blockchain_tx_hash || 'N/A',
+            verified: Boolean(batch?.blockchain_tx_hash),
+          },
+        };
+
+        setProvenanceData(pd);
+        toast.success('Product verified successfully!');
+        return;
+      }
+
+      // 3) Try products by product_code or id
+      const { data: product } = await supabase
+        .from('products')
+        .select('*')
+        .or(`product_code.eq.${code},id.eq.${code}`)
+        .maybeSingle();
+
+      if (product) {
+        const pd: ProvenanceData = {
+          productId: product.product_code || product.id,
+          productName: product.name,
+          species: {
+            scientific: 'N/A',
+            common: 'N/A',
+          },
+          collection: {
+            collector: product.manufacturer_id || 'Manufacturer',
+            location: 'N/A',
+            date: new Date(product.manufacturing_date || new Date().toISOString()).toISOString(),
+            coordinates: [0, 0],
+            quantity: 0,
+          },
+          quality: {
+            tested: false,
+            lab: 'N/A',
+            purity: 0,
+            certificates: [],
+          },
+          processing: {
+            facility: 'N/A',
+            date: new Date(product.updated_at).toISOString(),
+            method: 'Manufactured',
+          },
+          blockchain: {
+            txHash: product.blockchain_hash || 'N/A',
+            verified: Boolean(product.blockchain_hash),
+          },
+        };
+
+        setProvenanceData(pd);
+        toast.success('Product verified successfully!');
+        return;
+      }
+
+      // 4) Demo fallback
+      if (code.toLowerCase() === 'demo') {
         setProvenanceData(mockProvenanceData);
         toast.success('Product verified successfully!');
-      } else {
-        toast.error('Product not found in our database');
-        setProvenanceData(null);
+        return;
       }
+
+      toast.error('Product not found in our database');
+      setProvenanceData(null);
+    } catch (err) {
+      console.error('Scan error:', err);
+      toast.error('Verification failed. Please try again.');
+      setProvenanceData(null);
+    } finally {
       setLoading(false);
-    }, 1500);
+    }
   };
 
   const handleCameraScan = () => {

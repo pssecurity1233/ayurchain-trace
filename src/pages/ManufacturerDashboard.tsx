@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
 import { 
   Building2, 
   Package, 
@@ -412,6 +412,7 @@ const ManufacturerDashboard = () => {
                           <DialogContent className="sm:max-w-md">
                             <DialogHeader>
                               <DialogTitle>QR Code: {selectedQrCode}</DialogTitle>
+                              <DialogDescription>Scan or download this code to verify product authenticity.</DialogDescription>
                             </DialogHeader>
                             <div className="flex flex-col items-center space-y-4">
                               {qrImageUrl && (
