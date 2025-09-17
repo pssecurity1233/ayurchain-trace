@@ -175,8 +175,8 @@ const ManufacturerDashboard = () => {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'completed':
-        return <Badge className="bg-green-500"><CheckCircle className="h-3 w-3 mr-1" />Completed</Badge>;
+      case 'finalized':
+        return <Badge className="bg-green-500"><CheckCircle className="h-3 w-3 mr-1" />Finalized</Badge>;
       case 'in_progress':
         return <Badge variant="secondary"><Clock className="h-3 w-3 mr-1" />In Progress</Badge>;
       case 'recalled':
@@ -468,7 +468,7 @@ const ManufacturerDashboard = () => {
                         <SelectValue placeholder="Select batch" />
                       </SelectTrigger>
                       <SelectContent>
-                        {batches.filter(b => b.status === 'completed').map((batch: any) => (
+                        {batches.filter(b => b.status === 'finalized').map((batch: any) => (
                           <SelectItem key={batch.batch_id} value={batch.batch_id}>
                             Batch #{batch.batch_id?.slice(-8)}
                           </SelectItem>
