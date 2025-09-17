@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { 
   Building2, 
   Package, 
@@ -24,6 +25,7 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import QRCode from 'qrcode';
 
 const ManufacturerDashboard = () => {
   const { user, profile } = useAuth();
@@ -47,6 +49,8 @@ const ManufacturerDashboard = () => {
     quantity: '',
     productName: ''
   });
+  const [selectedQrCode, setSelectedQrCode] = useState<string>('');
+  const [qrImageUrl, setQrImageUrl] = useState<string>('');
 
   useEffect(() => {
     loadManufacturingData();
@@ -175,6 +179,29 @@ const ManufacturerDashboard = () => {
         variant: "destructive",
       });
     }
+  };
+
+  const generateQRCodeImage = async (qrId: string) => {
+    try {
+      const qrCodeDataURL = await QRCode.toDataURL(qrId, {
+        width: 256,
+        margin: 2,
+        color: {
+          dark: '#000000',
+          light: '#FFFFFF',
+        },
+      });
+      return qrCodeDataURL;
+    } catch (error) {
+      console.error('Error generating QR code:', error);
+      return '';
+    }
+  };
+
+  const handleViewQR = async (qrId: string) => {
+    setSelectedQrCode(qrId);
+    const imageUrl = await generateQRCodeImage(qrId);
+    setQrImageUrl(imageUrl);
   };
 
   const getStatusBadge = (status: string) => {
@@ -376,9 +403,46 @@ const ManufacturerDashboard = () => {
                             Generated: {new Date(qr.issued_at).toLocaleDateString()}
                           </div>
                         </div>
-                        <Button size="sm" variant="outline">
-                          View QR
-                        </Button>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button size="sm" variant="outline" onClick={() => handleViewQR(qr.qr_id)}>
+                              View QR
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="sm:max-w-md">
+                            <DialogHeader>
+                              <DialogTitle>QR Code: {selectedQrCode}</DialogTitle>
+                            </DialogHeader>
+                            <div className="flex flex-col items-center space-y-4">
+                              {qrImageUrl && (
+                                <div className="p-4 bg-white rounded-lg">
+                                  <img 
+                                    src={qrImageUrl} 
+                                    alt={`QR Code for ${selectedQrCode}`}
+                                    className="w-64 h-64"
+                                  />
+                                </div>
+                              )}
+                              <div className="text-center">
+                                <p className="font-semibold">{selectedQrCode}</p>
+                                <p className="text-sm text-muted-foreground">
+                                  Scan this code to verify product authenticity
+                                </p>
+                              </div>
+                              <Button 
+                                onClick={() => {
+                                  const link = document.createElement('a');
+                                  link.download = `${selectedQrCode}.png`;
+                                  link.href = qrImageUrl;
+                                  link.click();
+                                }}
+                                className="w-full"
+                              >
+                                Download QR Code
+                              </Button>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
                       </div>
                     ))}
                   </TabsContent>
