@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { 
   Camera, 
   Scan, 
@@ -17,10 +18,12 @@ import {
   AlertTriangle,
   ArrowRight,
   History,
-  FlaskConical
+  FlaskConical,
+  X
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { BrowserMultiFormatReader } from '@zxing/library';
 
 interface ProvenanceData {
   productId: string;
@@ -58,6 +61,9 @@ const Scanner = () => {
   const [qrInput, setQrInput] = useState('');
   const [provenanceData, setProvenanceData] = useState<ProvenanceData | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showCameraDialog, setShowCameraDialog] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const codeReaderRef = useRef<BrowserMultiFormatReader | null>(null);
 
   // Mock data for demonstration
   const mockProvenanceData: ProvenanceData = {
@@ -93,6 +99,68 @@ const Scanner = () => {
 
   const handleScan = async () => {
     const code = qrInput.trim();
+    handleScanWithCode(code);
+  };
+
+
+  const startCameraScanning = async () => {
+    setShowCameraDialog(true);
+    setScanning(true);
+
+    try {
+      // Request camera permission
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'environment' } 
+      });
+
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        videoRef.current.play();
+
+        // Initialize QR code reader
+        codeReaderRef.current = new BrowserMultiFormatReader();
+        
+        // Start scanning
+        codeReaderRef.current.decodeFromVideoDevice(
+          undefined,
+          videoRef.current,
+          (result, error) => {
+            if (result) {
+              const qrCode = result.getText();
+              stopCameraScanning();
+              setQrInput(qrCode);
+              toast.success('QR Code detected!');
+              handleScanWithCode(qrCode);
+            }
+          }
+        );
+      }
+    } catch (error) {
+      console.error('Camera access error:', error);
+      toast.error('Unable to access camera. Please check permissions.');
+      stopCameraScanning();
+    }
+  };
+
+  const stopCameraScanning = () => {
+    // Stop video stream
+    if (videoRef.current && videoRef.current.srcObject) {
+      const stream = videoRef.current.srcObject as MediaStream;
+      stream.getTracks().forEach(track => track.stop());
+      videoRef.current.srcObject = null;
+    }
+
+    // Reset code reader
+    if (codeReaderRef.current) {
+      codeReaderRef.current.reset();
+      codeReaderRef.current = null;
+    }
+
+    setScanning(false);
+    setShowCameraDialog(false);
+  };
+
+  const handleScanWithCode = async (code: string) => {
     if (!code) {
       toast.error('Please enter a QR code or product ID');
       return;
@@ -101,8 +169,8 @@ const Scanner = () => {
     setLoading(true);
 
     try {
-      // 1) Try product_qr (primary flow used by manufacturers)
-      const { data: pq, error: pqErr } = await supabase
+      // Same scanning logic as handleScan
+      const { data: pq } = await supabase
         .from('product_qr')
         .select('*')
         .eq('qr_id', code)
@@ -115,7 +183,6 @@ const Scanner = () => {
           .eq('batch_id', pq.batch_id)
           .maybeSingle();
 
-        // Try to enrich with one collection event if any
         let collectionEvent: any = null;
         if (pq.collection_event_ids && pq.collection_event_ids.length > 0) {
           const { data: col } = await supabase
@@ -126,7 +193,6 @@ const Scanner = () => {
           collectionEvent = col?.[0] ?? null;
         }
 
-        // Latest processing step for this batch
         const { data: steps } = await supabase
           .from('processing_steps')
           .select('*')
@@ -174,7 +240,6 @@ const Scanner = () => {
         return;
       }
 
-      // 2) Try qr_codes (secure QR system)
       const { data: qr } = await supabase
         .from('qr_codes')
         .select('*')
@@ -232,51 +297,6 @@ const Scanner = () => {
         return;
       }
 
-      // 3) Try products by product_code or id
-      const { data: product } = await supabase
-        .from('products')
-        .select('*')
-        .or(`product_code.eq.${code},id.eq.${code}`)
-        .maybeSingle();
-
-      if (product) {
-        const pd: ProvenanceData = {
-          productId: product.product_code || product.id,
-          productName: product.name,
-          species: {
-            scientific: 'N/A',
-            common: 'N/A',
-          },
-          collection: {
-            collector: product.manufacturer_id || 'Manufacturer',
-            location: 'N/A',
-            date: new Date(product.manufacturing_date || new Date().toISOString()).toISOString(),
-            coordinates: [0, 0],
-            quantity: 0,
-          },
-          quality: {
-            tested: false,
-            lab: 'N/A',
-            purity: 0,
-            certificates: [],
-          },
-          processing: {
-            facility: 'N/A',
-            date: new Date(product.updated_at).toISOString(),
-            method: 'Manufactured',
-          },
-          blockchain: {
-            txHash: product.blockchain_hash || 'N/A',
-            verified: Boolean(product.blockchain_hash),
-          },
-        };
-
-        setProvenanceData(pd);
-        toast.success('Product verified successfully!');
-        return;
-      }
-
-      // 4) Demo fallback
       if (code.toLowerCase() === 'demo') {
         setProvenanceData(mockProvenanceData);
         toast.success('Product verified successfully!');
@@ -295,15 +315,7 @@ const Scanner = () => {
   };
 
   const handleCameraScan = () => {
-    setScanning(true);
-    toast.info('Camera scanning will be available in the mobile app');
-    
-    // Simulate camera scan
-    setTimeout(() => {
-      setQrInput('ASH-001-2024-001');
-      setScanning(false);
-      handleScan();
-    }, 2000);
+    startCameraScanning();
   };
 
   const formatDate = (dateString: string) => {
@@ -365,16 +377,45 @@ const Scanner = () => {
               </div>
             </div>
 
-            {scanning && (
-              <div className="text-center py-8">
-                <div className="inline-block animate-pulse">
-                  <Camera className="h-16 w-16 text-primary mx-auto mb-4" />
-                  <p className="text-muted-foreground">Point camera at QR code...</p>
-                </div>
-              </div>
-            )}
           </CardContent>
         </Card>
+
+        {/* Camera Scanner Dialog */}
+        <Dialog open={showCameraDialog} onOpenChange={(open) => {
+          if (!open) stopCameraScanning();
+        }}>
+          <DialogContent className="max-w-lg">
+            <DialogHeader>
+              <DialogTitle className="flex items-center justify-between">
+                <span>Scan QR Code</span>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={stopCameraScanning}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="relative aspect-video bg-black rounded-lg overflow-hidden">
+                <video 
+                  ref={videoRef} 
+                  className="w-full h-full object-cover"
+                  playsInline
+                />
+                {scanning && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-64 h-64 border-4 border-primary rounded-lg animate-pulse" />
+                  </div>
+                )}
+              </div>
+              <p className="text-center text-sm text-muted-foreground">
+                Position the QR code within the frame to scan
+              </p>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* Provenance Results */}
         {provenanceData && (

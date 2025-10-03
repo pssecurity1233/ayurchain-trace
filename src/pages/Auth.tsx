@@ -114,7 +114,7 @@ const Auth = () => {
   const getRoleIcon = (role: string) => {
     switch (role) {
       case 'collector': return <Leaf className="h-5 w-5" />;
-      case 'lab_technician': return <FlaskConical className="h-5 w-5" />;
+      case 'lab': return <FlaskConical className="h-5 w-5" />;
       case 'manufacturer': return <Building2 className="h-5 w-5" />;
       case 'admin': return <ShieldCheck className="h-5 w-5" />;
       default: return <Users className="h-5 w-5" />;
@@ -124,7 +124,7 @@ const Auth = () => {
   const getRoleDescription = (role: string) => {
     switch (role) {
       case 'collector': return 'Field collectors and herb gatherers';
-      case 'lab_technician': return 'Quality testing and laboratory analysis';
+      case 'lab': return 'Quality testing and laboratory analysis';
       case 'manufacturer': return 'Product manufacturing and processing';
       case 'consumer': return 'End consumers and product buyers';
       case 'admin': return 'System administrators and supervisors';
@@ -237,12 +237,14 @@ const Auth = () => {
                         <SelectValue placeholder="Select your role" />
                       </SelectTrigger>
                       <SelectContent>
-                        {['collector', 'lab_technician', 'manufacturer', 'consumer'].map((role) => (
+                        {['collector', 'lab', 'manufacturer', 'consumer'].map((role) => (
                           <SelectItem key={role} value={role}>
                             <div className="flex items-center gap-2">
                               {getRoleIcon(role)}
                               <div>
-                                <div className="font-medium capitalize">{role.replace('_', ' ')}</div>
+                                <div className="font-medium capitalize">
+                                  {role === 'lab' ? 'Lab Technician' : role}
+                                </div>
                                 <div className="text-xs text-muted-foreground">
                                   {getRoleDescription(role)}
                                 </div>
