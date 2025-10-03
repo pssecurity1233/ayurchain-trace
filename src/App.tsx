@@ -8,20 +8,21 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Navigation from "./components/Navigation";
 import Home from "./pages/Home";
 import Auth from "./pages/Auth";
-import Scanner from "./pages/Scanner";
-import Collector from "./pages/Collector";
-import Dashboard from "./pages/Dashboard";
-import Laboratory from "./pages/Laboratory";
-import CollectorDashboard from "./pages/CollectorDashboard";
-import LabDashboard from "./pages/LabDashboard";
-import ManufacturerDashboard from "./pages/ManufacturerDashboard";
-import ConsumerDashboard from "./pages/ConsumerDashboard";
-import ProcessorDashboard from "./pages/ProcessorDashboard";
-import RegulatorDashboard from "./pages/RegulatorDashboard";
-import AdminDashboard from "./pages/AdminDashboard";
-import NotFound from "./pages/NotFound";
-import Unauthorized from "./pages/Unauthorized";
-import ProfileSetup from "./pages/ProfileSetup";
+import Scanner from './pages/Scanner';
+import Dashboard from './pages/Dashboard';
+import CollectorDashboard from './pages/CollectorDashboard';
+import LabDashboard from './pages/LabDashboard';
+import EnhancedLabDashboard from './pages/EnhancedLabDashboard';
+import ManufacturerDashboard from './pages/ManufacturerDashboard';
+import ConsumerDashboard from './pages/ConsumerDashboard';
+import Collector from './pages/Collector';
+import Laboratory from './pages/Laboratory';
+import AdminDashboard from './pages/AdminDashboard';
+import ProcessorDashboard from './pages/ProcessorDashboard';
+import RegulatorDashboard from './pages/RegulatorDashboard';
+import NotFound from './pages/NotFound';
+import Unauthorized from './pages/Unauthorized';
+import ProfileSetup from './pages/ProfileSetup';
 
 const queryClient = new QueryClient();
 
@@ -86,7 +87,19 @@ const AppContent = () => {
         
         <Route path="/lab-dashboard" element={
           <ProtectedRoute allowedRoles={['lab']}>
-            <LabDashboard />
+            <EnhancedLabDashboard />
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/processor-dashboard" element={
+          <ProtectedRoute allowedRoles={['processor']}>
+            <ProcessorDashboard />
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/regulator-dashboard" element={
+          <ProtectedRoute allowedRoles={['regulator']}>
+            <RegulatorDashboard />
           </ProtectedRoute>
         } />
         

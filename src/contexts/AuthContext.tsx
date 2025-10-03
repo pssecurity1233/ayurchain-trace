@@ -33,45 +33,49 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
+  const fetchUserProfile = async (userId: string) => {
+    try {
+      // Fetch profile
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', userId)
+        .maybeSingle();
+
+      if (profileError) throw profileError;
+      setProfile(profileData);
+
+      // Fetch user roles from user_roles table
+      const { data: rolesData } = await supabase
+        .from('user_roles' as any)
+        .select('role')
+        .eq('user_id', userId);
+
+      if (rolesData && Array.isArray(rolesData)) {
+        const roles = rolesData.map((r: any) => r.role) || [];
+        // Set primary role (first role, or default to consumer)
+        setUserRole(roles[0] || 'consumer');
+      } else {
+        setUserRole(null);
+      }
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+    }
+  };
+
   useEffect(() => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          // Fetch user profile
-          setTimeout(async () => {
-            try {
-              const { data: profileData, error } = await supabase
-                .from('profiles')
-                .select('*')
-                .eq('user_id', session.user.id)
-                .maybeSingle();
-
-              if (error && error.code !== 'PGRST116') {
-                console.error('Error fetching profile:', error);
-              } else if (profileData) {
-                setProfile(profileData);
-                setUserRole(profileData.role);
-                
-                // Update last login
-                await supabase
-                  .from('profiles')
-                  .update({ last_login: new Date().toISOString() })
-                  .eq('user_id', session.user.id);
-              }
-            } catch (error) {
-              console.error('Error in profile fetch:', error);
-            }
-          }, 0);
+          setTimeout(() => fetchUserProfile(session.user.id), 0);
         } else {
           setProfile(null);
           setUserRole(null);
         }
-        
-        setLoading(false);
       }
     );
 
@@ -79,7 +83,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
-      if (!session) {
+      
+      if (session?.user) {
+        fetchUserProfile(session.user.id).then(() => setLoading(false));
+      } else {
         setLoading(false);
       }
     });
