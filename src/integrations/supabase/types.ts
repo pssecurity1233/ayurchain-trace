@@ -116,6 +116,120 @@ export type Database = {
         }
         Relationships: []
       }
+      attack_logs: {
+        Row: {
+          attack_signature: string | null
+          attack_status: Database["public"]["Enums"]["attack_status"]
+          attack_type: Database["public"]["Enums"]["attack_type"]
+          confidence_score: number | null
+          created_at: string
+          decoded_url: string | null
+          destination_ip: unknown | null
+          evidence: Json | null
+          headers: Json | null
+          http_method: string | null
+          id: string
+          is_successful: boolean | null
+          metadata: Json | null
+          mitigation: string | null
+          notes: string | null
+          payload: string | null
+          response_code: number | null
+          response_time_ms: number | null
+          severity: Database["public"]["Enums"]["severity_level"]
+          source_ip: unknown
+          timestamp: string
+          url: string
+          user_agent: string | null
+        }
+        Insert: {
+          attack_signature?: string | null
+          attack_status?: Database["public"]["Enums"]["attack_status"]
+          attack_type: Database["public"]["Enums"]["attack_type"]
+          confidence_score?: number | null
+          created_at?: string
+          decoded_url?: string | null
+          destination_ip?: unknown | null
+          evidence?: Json | null
+          headers?: Json | null
+          http_method?: string | null
+          id?: string
+          is_successful?: boolean | null
+          metadata?: Json | null
+          mitigation?: string | null
+          notes?: string | null
+          payload?: string | null
+          response_code?: number | null
+          response_time_ms?: number | null
+          severity?: Database["public"]["Enums"]["severity_level"]
+          source_ip: unknown
+          timestamp?: string
+          url: string
+          user_agent?: string | null
+        }
+        Update: {
+          attack_signature?: string | null
+          attack_status?: Database["public"]["Enums"]["attack_status"]
+          attack_type?: Database["public"]["Enums"]["attack_type"]
+          confidence_score?: number | null
+          created_at?: string
+          decoded_url?: string | null
+          destination_ip?: unknown | null
+          evidence?: Json | null
+          headers?: Json | null
+          http_method?: string | null
+          id?: string
+          is_successful?: boolean | null
+          metadata?: Json | null
+          mitigation?: string | null
+          notes?: string | null
+          payload?: string | null
+          response_code?: number | null
+          response_time_ms?: number | null
+          severity?: Database["public"]["Enums"]["severity_level"]
+          source_ip?: unknown
+          timestamp?: string
+          url?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
+      attack_signatures: {
+        Row: {
+          attack_type: Database["public"]["Enums"]["attack_type"]
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean | null
+          pattern: string
+          severity: Database["public"]["Enums"]["severity_level"]
+          signature_name: string
+          updated_at: string
+        }
+        Insert: {
+          attack_type: Database["public"]["Enums"]["attack_type"]
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          pattern: string
+          severity: Database["public"]["Enums"]["severity_level"]
+          signature_name: string
+          updated_at?: string
+        }
+        Update: {
+          attack_type?: Database["public"]["Enums"]["attack_type"]
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          pattern?: string
+          severity?: Database["public"]["Enums"]["severity_level"]
+          signature_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       audit_logs: {
         Row: {
           action: string
@@ -389,6 +503,117 @@ export type Database = {
         }
         Relationships: []
       }
+      blockchain_blocks: {
+        Row: {
+          block_number: number
+          created_at: string
+          hash: string
+          id: string
+          merkle_root: string
+          previous_block_hash: string
+          transaction_count: number | null
+        }
+        Insert: {
+          block_number: number
+          created_at?: string
+          hash: string
+          id?: string
+          merkle_root: string
+          previous_block_hash: string
+          transaction_count?: number | null
+        }
+        Update: {
+          block_number?: number
+          created_at?: string
+          hash?: string
+          id?: string
+          merkle_root?: string
+          previous_block_hash?: string
+          transaction_count?: number | null
+        }
+        Relationships: []
+      }
+      blockchain_transactions: {
+        Row: {
+          created_at: string
+          data: Json
+          hash: string
+          id: string
+          organization_id: string
+          previous_hash: string
+          signature: string
+          transaction_id: string
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          data: Json
+          hash: string
+          id?: string
+          organization_id: string
+          previous_hash: string
+          signature: string
+          transaction_id: string
+          type: string
+        }
+        Update: {
+          created_at?: string
+          data?: Json
+          hash?: string
+          id?: string
+          organization_id?: string
+          previous_hash?: string
+          signature?: string
+          transaction_id?: string
+          type?: string
+        }
+        Relationships: []
+      }
+      bulk_scans: {
+        Row: {
+          completed: number | null
+          completed_at: string | null
+          created_at: string | null
+          failed_count: number | null
+          id: string
+          malicious_count: number | null
+          results: Json | null
+          safe_count: number | null
+          status: string | null
+          suspicious_count: number | null
+          total_targets: number
+          user_id: string | null
+        }
+        Insert: {
+          completed?: number | null
+          completed_at?: string | null
+          created_at?: string | null
+          failed_count?: number | null
+          id?: string
+          malicious_count?: number | null
+          results?: Json | null
+          safe_count?: number | null
+          status?: string | null
+          suspicious_count?: number | null
+          total_targets: number
+          user_id?: string | null
+        }
+        Update: {
+          completed?: number | null
+          completed_at?: string | null
+          created_at?: string | null
+          failed_count?: number | null
+          id?: string
+          malicious_count?: number | null
+          results?: Json | null
+          safe_count?: number | null
+          status?: string | null
+          suspicious_count?: number | null
+          total_targets?: number
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       cache_entries: {
         Row: {
           cache_key: string
@@ -653,6 +878,60 @@ export type Database = {
         }
         Relationships: []
       }
+      consumer_feedback: {
+        Row: {
+          admin_response: string | null
+          batch_id: string | null
+          consumer_id: string
+          created_at: string | null
+          description: string
+          feedback_type: string
+          id: string
+          images: Json | null
+          is_verified: boolean | null
+          qr_code_id: string | null
+          rating: number | null
+          reward_points: number | null
+          status: string | null
+          title: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          admin_response?: string | null
+          batch_id?: string | null
+          consumer_id: string
+          created_at?: string | null
+          description: string
+          feedback_type: string
+          id?: string
+          images?: Json | null
+          is_verified?: boolean | null
+          qr_code_id?: string | null
+          rating?: number | null
+          reward_points?: number | null
+          status?: string | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          admin_response?: string | null
+          batch_id?: string | null
+          consumer_id?: string
+          created_at?: string | null
+          description?: string
+          feedback_type?: string
+          id?: string
+          images?: Json | null
+          is_verified?: boolean | null
+          qr_code_id?: string | null
+          rating?: number | null
+          reward_points?: number | null
+          status?: string | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       consumer_scans: {
         Row: {
           device_info: Json | null
@@ -862,6 +1141,54 @@ export type Database = {
           },
         ]
       }
+      http_requests: {
+        Row: {
+          body: string | null
+          created_at: string | null
+          decoded_url: string | null
+          dest_ip: unknown | null
+          headers: Json | null
+          id: string
+          method: string
+          response_code: number | null
+          response_size: number | null
+          response_time_ms: number | null
+          source_ip: unknown
+          timestamp: string
+          url: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string | null
+          decoded_url?: string | null
+          dest_ip?: unknown | null
+          headers?: Json | null
+          id?: string
+          method: string
+          response_code?: number | null
+          response_size?: number | null
+          response_time_ms?: number | null
+          source_ip: unknown
+          timestamp?: string
+          url: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string | null
+          decoded_url?: string | null
+          dest_ip?: unknown | null
+          headers?: Json | null
+          id?: string
+          method?: string
+          response_code?: number | null
+          response_size?: number | null
+          response_time_ms?: number | null
+          source_ip?: unknown
+          timestamp?: string
+          url?: string
+        }
+        Relationships: []
+      }
       kit_distributions: {
         Row: {
           delivery_proof_photo: string | null
@@ -1064,6 +1391,48 @@ export type Database = {
           },
         ]
       }
+      ml_models_metadata: {
+        Row: {
+          accuracy: number | null
+          created_at: string | null
+          f1_score: number | null
+          feature_count: number | null
+          id: string
+          is_active: boolean | null
+          model_name: string
+          precision_score: number | null
+          recall_score: number | null
+          training_date: string | null
+          version: string
+        }
+        Insert: {
+          accuracy?: number | null
+          created_at?: string | null
+          f1_score?: number | null
+          feature_count?: number | null
+          id?: string
+          is_active?: boolean | null
+          model_name: string
+          precision_score?: number | null
+          recall_score?: number | null
+          training_date?: string | null
+          version: string
+        }
+        Update: {
+          accuracy?: number | null
+          created_at?: string | null
+          f1_score?: number | null
+          feature_count?: number | null
+          id?: string
+          is_active?: boolean | null
+          model_name?: string
+          precision_score?: number | null
+          recall_score?: number | null
+          training_date?: string | null
+          version?: string
+        }
+        Relationships: []
+      }
       notification_channels: {
         Row: {
           channel_name: string
@@ -1176,6 +1545,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      pcap_uploads: {
+        Row: {
+          attacks_detected: number | null
+          error_message: string | null
+          file_size: number | null
+          filename: string
+          id: string
+          metadata: Json | null
+          processing_completed_at: string | null
+          processing_status: string
+          upload_timestamp: string
+        }
+        Insert: {
+          attacks_detected?: number | null
+          error_message?: string | null
+          file_size?: number | null
+          filename: string
+          id?: string
+          metadata?: Json | null
+          processing_completed_at?: string | null
+          processing_status?: string
+          upload_timestamp?: string
+        }
+        Update: {
+          attacks_detected?: number | null
+          error_message?: string | null
+          file_size?: number | null
+          filename?: string
+          id?: string
+          metadata?: Json | null
+          processing_completed_at?: string | null
+          processing_status?: string
+          upload_timestamp?: string
+        }
+        Relationships: []
       }
       processing_facilities: {
         Row: {
@@ -1535,6 +1940,39 @@ export type Database = {
           },
         ]
       }
+      qr_scan_history: {
+        Row: {
+          batch_id: string | null
+          consumer_id: string | null
+          id: string
+          ip_address: unknown | null
+          location_data: Json | null
+          qr_code_id: string
+          scanned_at: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          batch_id?: string | null
+          consumer_id?: string | null
+          id?: string
+          ip_address?: unknown | null
+          location_data?: Json | null
+          qr_code_id: string
+          scanned_at?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          batch_id?: string | null
+          consumer_id?: string | null
+          id?: string
+          ip_address?: unknown | null
+          location_data?: Json | null
+          qr_code_id?: string
+          scanned_at?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       quality_tests: {
         Row: {
           batch_id: string | null
@@ -1673,6 +2111,81 @@ export type Database = {
           },
         ]
       }
+      scan_history: {
+        Row: {
+          attack_patterns: Json | null
+          attack_types: string[] | null
+          confidence: number | null
+          decoded_url: string | null
+          detection_method: string | null
+          domain_intelligence: Json | null
+          features: Json | null
+          features_json: Json | null
+          id: string
+          lexical_analysis: Json | null
+          ml_confidence: number | null
+          ml_prediction: string | null
+          network_analysis: Json | null
+          reasons: string[]
+          recommendations: Json | null
+          risk_score: number
+          scan_duration_ms: number | null
+          scanned_at: string
+          ssl_analysis: Json | null
+          status: string
+          threat_intelligence: Json | null
+          url: string
+        }
+        Insert: {
+          attack_patterns?: Json | null
+          attack_types?: string[] | null
+          confidence?: number | null
+          decoded_url?: string | null
+          detection_method?: string | null
+          domain_intelligence?: Json | null
+          features?: Json | null
+          features_json?: Json | null
+          id?: string
+          lexical_analysis?: Json | null
+          ml_confidence?: number | null
+          ml_prediction?: string | null
+          network_analysis?: Json | null
+          reasons?: string[]
+          recommendations?: Json | null
+          risk_score: number
+          scan_duration_ms?: number | null
+          scanned_at?: string
+          ssl_analysis?: Json | null
+          status: string
+          threat_intelligence?: Json | null
+          url: string
+        }
+        Update: {
+          attack_patterns?: Json | null
+          attack_types?: string[] | null
+          confidence?: number | null
+          decoded_url?: string | null
+          detection_method?: string | null
+          domain_intelligence?: Json | null
+          features?: Json | null
+          features_json?: Json | null
+          id?: string
+          lexical_analysis?: Json | null
+          ml_confidence?: number | null
+          ml_prediction?: string | null
+          network_analysis?: Json | null
+          reasons?: string[]
+          recommendations?: Json | null
+          risk_score?: number
+          scan_duration_ms?: number | null
+          scanned_at?: string
+          ssl_analysis?: Json | null
+          status?: string
+          threat_intelligence?: Json | null
+          url?: string
+        }
+        Relationships: []
+      }
       season_windows: {
         Row: {
           created_at: string
@@ -1704,6 +2217,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      security_events: {
+        Row: {
+          details: Json | null
+          event_type: string
+          id: string
+          qr_id: string | null
+          severity: string | null
+          timestamp: string
+        }
+        Insert: {
+          details?: Json | null
+          event_type: string
+          id?: string
+          qr_id?: string | null
+          severity?: string | null
+          timestamp?: string
+        }
+        Update: {
+          details?: Json | null
+          event_type?: string
+          id?: string
+          qr_id?: string | null
+          severity?: string | null
+          timestamp?: string
+        }
+        Relationships: []
       }
       spatial_ref_sys: {
         Row: {
@@ -1783,6 +2323,42 @@ export type Database = {
           is_public?: boolean | null
           updated_at?: string | null
           updated_by?: string | null
+        }
+        Relationships: []
+      }
+      threat_analyses: {
+        Row: {
+          analysis_details: Json
+          classification: string
+          created_at: string
+          id: string
+          risk_score: number
+          target_type: string
+          target_url: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          analysis_details?: Json
+          classification: string
+          created_at?: string
+          id?: string
+          risk_score: number
+          target_type: string
+          target_url: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          analysis_details?: Json
+          classification?: string
+          created_at?: string
+          id?: string
+          risk_score?: number
+          target_type?: string
+          target_url?: string
+          updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -1872,6 +2448,39 @@ export type Database = {
           target_role?: Database["public"]["Enums"]["user_role"]
           title?: string
           version?: number | null
+        }
+        Relationships: []
+      }
+      user_actions_audit: {
+        Row: {
+          action: string
+          created_at: string | null
+          details: Json | null
+          id: string
+          ip_address: unknown | null
+          resource_id: string | null
+          resource_type: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          ip_address?: unknown | null
+          resource_id?: string | null
+          resource_type?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          ip_address?: unknown | null
+          resource_id?: string | null
+          resource_type?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -2452,6 +3061,10 @@ export type Database = {
       bytea: {
         Args: { "": unknown } | { "": unknown }
         Returns: string
+      }
+      clean_expired_cache: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
       }
       create_audit_log: {
         Args: {
@@ -4118,6 +4731,20 @@ export type Database = {
       }
     }
     Enums: {
+      attack_status: "attempted" | "successful" | "blocked"
+      attack_type:
+        | "typosquatting"
+        | "sql_injection"
+        | "xss"
+        | "directory_traversal"
+        | "command_injection"
+        | "ssrf"
+        | "lfi_rfi"
+        | "credential_stuffing"
+        | "http_parameter_pollution"
+        | "xxe_injection"
+        | "web_shell_upload"
+        | "other"
       facility_type:
         | "mrf"
         | "biomethanation"
@@ -4126,6 +4753,7 @@ export type Database = {
         | "scrap_shop"
         | "compost_facility"
       report_status: "open" | "assigned" | "in_progress" | "resolved" | "closed"
+      severity_level: "critical" | "high" | "medium" | "low" | "info"
       training_status: "not_started" | "in_progress" | "completed" | "expired"
       user_role:
         | "collector"
@@ -4134,6 +4762,7 @@ export type Database = {
         | "manufacturer"
         | "admin"
         | "consumer"
+        | "regulator"
       waste_category:
         | "wet_organic"
         | "dry_recyclable"
@@ -4275,6 +4904,21 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      attack_status: ["attempted", "successful", "blocked"],
+      attack_type: [
+        "typosquatting",
+        "sql_injection",
+        "xss",
+        "directory_traversal",
+        "command_injection",
+        "ssrf",
+        "lfi_rfi",
+        "credential_stuffing",
+        "http_parameter_pollution",
+        "xxe_injection",
+        "web_shell_upload",
+        "other",
+      ],
       facility_type: [
         "mrf",
         "biomethanation",
@@ -4284,6 +4928,7 @@ export const Constants = {
         "compost_facility",
       ],
       report_status: ["open", "assigned", "in_progress", "resolved", "closed"],
+      severity_level: ["critical", "high", "medium", "low", "info"],
       training_status: ["not_started", "in_progress", "completed", "expired"],
       user_role: [
         "collector",
@@ -4292,6 +4937,7 @@ export const Constants = {
         "manufacturer",
         "admin",
         "consumer",
+        "regulator",
       ],
       waste_category: [
         "wet_organic",

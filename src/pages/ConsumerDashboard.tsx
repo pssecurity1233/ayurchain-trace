@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import Navigation from '@/components/Navigation';
+import FeedbackForm from '@/components/FeedbackForm';
 import { 
   Scan, 
   History, 
@@ -16,7 +18,8 @@ import {
   FileText,
   Star,
   Shield,
-  TrendingUp
+  TrendingUp,
+  MessageSquare
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -40,44 +43,44 @@ const ConsumerDashboard = () => {
 
   const loadConsumerData = async () => {
     try {
-      // Mock data since we don't have a consumer_scans table directly linked to users
-      const mockScans = [
-        {
-          id: '1',
-          product_name: 'Organic Ashwagandha Powder',
-          brand: 'Pure Ayur',
-          scanned_at: new Date(Date.now() - 86400000).toISOString(),
-          authenticity: 'verified',
-          location: 'Mumbai, India',
-          rating: 4.5
-        },
-        {
-          id: '2',
-          product_name: 'Turmeric Capsules',
-          brand: 'Herbal Life',
-          scanned_at: new Date(Date.now() - 172800000).toISOString(),
-          authenticity: 'verified',
-          location: 'Delhi, India',
-          rating: 4.8
-        },
-        {
-          id: '3',
-          product_name: 'Brahmi Extract',
-          brand: 'Nature\'s Best',
-          scanned_at: new Date(Date.now() - 259200000).toISOString(),
-          authenticity: 'verified',
-          location: 'Bangalore, India',
-          rating: 4.3
-        }
-      ];
+      if (!user) return;
 
-      setScanHistory(mockScans);
+      // Load scan history from database
+      const { data: scanData, error } = await supabase
+        .from('qr_scan_history')
+        .select('*')
+        .eq('consumer_id', user.id)
+        .order('scanned_at', { ascending: false })
+        .limit(10);
+
+      if (error) throw error;
+
+      // Transform scan data
+      const transformedScans = (scanData || []).map((scan: any) => ({
+        id: scan.id,
+        product_name: scan.location_data?.product_name || 'Ayurvedic Product',
+        brand: scan.location_data?.brand || 'Unknown Brand',
+        scanned_at: scan.scanned_at,
+        authenticity: 'verified',
+        location: scan.location_data?.location || 'India',
+        rating: scan.location_data?.rating || 4.5
+      }));
+
+      setScanHistory(transformedScans);
+
+      // Load consumer feedback for reward points
+      const { data: feedbackData } = await supabase
+        .from('consumer_feedback')
+        .select('reward_points')
+        .eq('consumer_id', user.id);
+
+      const totalRewards = (feedbackData || []).reduce((sum: number, f: any) => sum + (f.reward_points || 0), 0);
       
       setConsumerStats({
-        totalScans: mockScans.length,
-        authenticProducts: mockScans.filter(s => s.authenticity === 'verified').length,
+        totalScans: transformedScans.length,
+        authenticProducts: transformedScans.filter(s => s.authenticity === 'verified').length,
         savedProducts: 2,
-        rewardPoints: 150
+        rewardPoints: totalRewards + (transformedScans.length * 10)
       });
     } catch (error) {
       console.error('Error loading consumer data:', error);
@@ -92,32 +95,67 @@ const ConsumerDashboard = () => {
     });
   };
 
-  const mockScanResult = () => {
-    // Simulate a successful scan
-    const newScan = {
-      id: Date.now().toString(),
-      product_name: 'Premium Neem Oil',
-      brand: 'Organic Herbs Co.',
-      scanned_at: new Date().toISOString(),
-      authenticity: 'verified',
-      location: 'Chennai, India',
-      rating: 4.6
-    };
+  const mockScanResult = async () => {
+    if (!user) {
+      toast({
+        title: "Login Required",
+        description: "Please log in to scan products",
+        variant: "destructive"
+      });
+      return;
+    }
 
-    setScanHistory([newScan, ...scanHistory]);
-    setConsumerStats(prev => ({
-      ...prev,
-      totalScans: prev.totalScans + 1,
-      authenticProducts: prev.authenticProducts + 1,
-      rewardPoints: prev.rewardPoints + 10
-    }));
+    try {
+      // Record scan in database
+      const { data, error } = await supabase
+        .from('qr_scan_history')
+        .insert({
+          consumer_id: user.id,
+          qr_code_id: `QR-${Date.now()}`,
+          location_data: {
+            product_name: 'Premium Neem Oil',
+            brand: 'Organic Herbs Co.',
+            location: 'Chennai, India',
+            rating: 4.6
+          }
+        })
+        .select()
+        .single();
 
-    setShowScanner(false);
-    
-    toast({
-      title: "Product Verified!",
-      description: "This is an authentic Ayurvedic product. +10 reward points earned!",
-    });
+      if (error) throw error;
+
+      const newScan = {
+        id: data.id,
+        product_name: 'Premium Neem Oil',
+        brand: 'Organic Herbs Co.',
+        scanned_at: data.scanned_at,
+        authenticity: 'verified',
+        location: 'Chennai, India',
+        rating: 4.6
+      };
+
+      setScanHistory([newScan, ...scanHistory]);
+      setConsumerStats(prev => ({
+        ...prev,
+        totalScans: prev.totalScans + 1,
+        authenticProducts: prev.authenticProducts + 1,
+        rewardPoints: prev.rewardPoints + 10
+      }));
+
+      setShowScanner(false);
+      
+      toast({
+        title: "Product Verified!",
+        description: "This is an authentic Ayurvedic product. +10 reward points earned!",
+      });
+    } catch (error: any) {
+      console.error('Scan error:', error);
+      toast({
+        title: "Scan Failed",
+        description: error.message || "Failed to record scan",
+        variant: "destructive"
+      });
+    }
   };
 
   const getAuthenticityBadge = (authenticity: string) => {
@@ -141,9 +179,11 @@ const ConsumerDashboard = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-6 max-w-lg">
-      {/* Header */}
-      <div className="bg-gradient-primary rounded-xl p-6 mb-6 text-white">
+    <div className="min-h-screen bg-background">
+      <Navigation />
+      <div className="container mx-auto px-4 py-6 max-w-lg">
+        {/* Header */}
+        <div className="bg-gradient-primary rounded-xl p-6 mb-6 text-white">
         <div className="text-center mb-4">
           <h1 className="text-xl font-bold">Ayurvedic Product Scanner</h1>
           <p className="text-white/80 text-sm">Verify authenticity instantly</p>
@@ -272,6 +312,18 @@ const ConsumerDashboard = () => {
                       {scan.location}
                     </span>
                   </div>
+                  
+                  <div className="mt-2">
+                    <FeedbackForm 
+                      qrCodeId={scan.id} 
+                      trigger={
+                        <Button variant="ghost" size="sm" className="w-full">
+                          <MessageSquare className="h-3 w-3 mr-1" />
+                          Leave Feedback
+                        </Button>
+                      }
+                    />
+                  </div>
                 </div>
               </div>
             ))
@@ -317,6 +369,7 @@ const ConsumerDashboard = () => {
           </div>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 };

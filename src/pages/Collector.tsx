@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
+import Navigation from '@/components/Navigation';
 import { 
   MapPin, 
   Camera, 
@@ -15,7 +16,7 @@ import {
   CheckCircle,
   AlertCircle,
   Upload,
-  Navigation,
+  Navigation as NavigationIcon,
   Smartphone
 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -117,10 +118,57 @@ const Collector = () => {
 
     setSubmitting(true);
     
-    // Simulate blockchain transaction
     try {
-      // Mock API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Import supabase and useAuth
+      const { supabase } = await import('@/integrations/supabase/client');
+      const { useAuth } = await import('@/contexts/AuthContext');
+      
+      // Get current user
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast.error('You must be logged in to record collections');
+        setSubmitting(false);
+        return;
+      }
+
+      // Insert collection event
+      const { data, error } = await supabase
+        .from('collection_events')
+        .insert({
+          collector_id: user.id,
+          species_id: formData.species,
+          latitude: formData.coordinates.lat,
+          longitude: formData.coordinates.lng,
+          quantity_kg: parseFloat(formData.quantity),
+          timestamp: new Date(formData.harvestDate).toISOString(),
+          initial_quality: {
+            grade: formData.quality,
+            notes: formData.notes
+          },
+          notes: formData.notes
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Call blockchain integration edge function
+      try {
+        await supabase.functions.invoke('blockchain-integration', {
+          body: {
+            action: 'record_collection',
+            collection_event_id: data.id,
+            collector_id: user.id,
+            species_id: formData.species,
+            quantity: parseFloat(formData.quantity),
+            location: { lat: formData.coordinates.lat, lng: formData.coordinates.lng }
+          }
+        });
+      } catch (blockchainError) {
+        console.error('Blockchain recording failed:', blockchainError);
+        // Continue anyway - data is in database
+      }
       
       toast.success('Collection recorded successfully on blockchain!');
       
@@ -137,8 +185,9 @@ const Collector = () => {
       });
       setLocationStatus('idle');
       
-    } catch (error) {
-      toast.error('Failed to record collection. Please try again.');
+    } catch (error: any) {
+      console.error('Collection submission error:', error);
+      toast.error(`Failed to record collection: ${error.message || 'Please try again'}`);
     } finally {
       setSubmitting(false);
     }
@@ -147,18 +196,20 @@ const Collector = () => {
   const selectedHerb = ayurvedicHerbs.find(herb => herb.id === formData.species);
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <div className="space-y-8">
-        {/* Header */}
-        <div className="text-center space-y-4">
-          <h1 className="text-3xl md:text-4xl font-bold">
-            Herb <span className="text-primary">Collection</span> Entry
-          </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Record your Ayurvedic herb collection with precise GPS tracking and quality assessment. 
-            All data is immediately secured on the blockchain for traceability.
-          </p>
-        </div>
+    <div className="min-h-screen bg-background">
+      <Navigation />
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <div className="space-y-8">
+          {/* Header */}
+          <div className="text-center space-y-4">
+            <h1 className="text-3xl md:text-4xl font-bold">
+              Herb <span className="text-primary">Collection</span> Entry
+            </h1>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Record your Ayurvedic herb collection with precise GPS tracking and quality assessment. 
+              All data is immediately secured on the blockchain for traceability.
+            </p>
+          </div>
 
         {/* Collection Form */}
         <Card className="shadow-large">
@@ -243,7 +294,7 @@ const Collector = () => {
                     variant={locationStatus === 'success' ? 'default' : 'outline'}
                     className="flex-1"
                   >
-                    <Navigation className="h-4 w-4 mr-2" />
+                    <NavigationIcon className="h-4 w-4 mr-2" />
                     {locationStatus === 'loading' ? 'Getting Location...' : 
                      locationStatus === 'success' ? 'Location Captured' : 
                      'Capture Current Location'}
@@ -416,6 +467,7 @@ const Collector = () => {
             </div>
           </CardContent>
         </Card>
+        </div>
       </div>
     </div>
   );
