@@ -52,6 +52,16 @@ const ProfileSetup = () => {
 
       if (profileError) throw profileError;
 
+      // Insert into user_roles table for role-based access control
+      const { error: roleError } = await supabase
+        .from('user_roles')
+        .insert({
+          user_id: user?.id,
+          role: profileData.role as any
+        });
+
+      if (roleError) throw roleError;
+
       // Create role-specific profile if needed
       if (profileData.role === 'collector') {
         const { error: collectorError } = await supabase

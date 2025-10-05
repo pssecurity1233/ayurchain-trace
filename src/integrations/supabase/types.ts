@@ -194,6 +194,242 @@ export type Database = {
         }
         Relationships: []
       }
+      attack_patterns: {
+        Row: {
+          attack_type: string
+          confidence_weight: number
+          created_at: string
+          description: string | null
+          enabled: boolean | null
+          id: string
+          pattern_name: string
+          pattern_regex: string
+          severity: string
+          updated_at: string
+        }
+        Insert: {
+          attack_type: string
+          confidence_weight: number
+          created_at?: string
+          description?: string | null
+          enabled?: boolean | null
+          id?: string
+          pattern_name: string
+          pattern_regex: string
+          severity: string
+          updated_at?: string
+        }
+        Update: {
+          attack_type?: string
+          confidence_weight?: number
+          created_at?: string
+          description?: string | null
+          enabled?: boolean | null
+          id?: string
+          pattern_name?: string
+          pattern_regex?: string
+          severity?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      attack_records: {
+        Row: {
+          accept_header: string | null
+          analyst_notes: string | null
+          asn: number | null
+          asn_org: string | null
+          attack_subtype: string | null
+          attack_type: string
+          authorization_header: string | null
+          confidence_score: number | null
+          content_type: string | null
+          cookies: Json | null
+          country_code: string | null
+          created_at: string | null
+          custom_headers: Json | null
+          destination_ip: unknown | null
+          destination_port: number | null
+          detection_method: string
+          entropy_score: number | null
+          error_messages: string[] | null
+          false_positive_reason: string | null
+          fragment: string | null
+          full_request: string | null
+          host: string | null
+          http_method: string | null
+          http_status_code: number | null
+          http_version: string | null
+          id: string
+          is_proxy: boolean | null
+          is_tor: boolean | null
+          is_vpn: boolean | null
+          location: string | null
+          matched_signatures: string[] | null
+          param_count: number | null
+          path: string | null
+          payload: string | null
+          payload_decoded: string | null
+          payload_entropy: number | null
+          pcap_file_id: string | null
+          query_string: string | null
+          referer: string | null
+          request_count_in_session: number | null
+          response_contains_data: boolean | null
+          response_size: number | null
+          response_time_ms: number | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          scheme: string | null
+          session_id: string | null
+          severity: string
+          source_ip: unknown
+          source_port: number | null
+          special_char_count: number | null
+          status: string
+          success_indicators: Json | null
+          suspicious_patterns: Json | null
+          target_url: string
+          time_since_last_request: number | null
+          timestamp: string
+          updated_at: string | null
+          url_length: number | null
+          user_agent: string | null
+        }
+        Insert: {
+          accept_header?: string | null
+          analyst_notes?: string | null
+          asn?: number | null
+          asn_org?: string | null
+          attack_subtype?: string | null
+          attack_type: string
+          authorization_header?: string | null
+          confidence_score?: number | null
+          content_type?: string | null
+          cookies?: Json | null
+          country_code?: string | null
+          created_at?: string | null
+          custom_headers?: Json | null
+          destination_ip?: unknown | null
+          destination_port?: number | null
+          detection_method: string
+          entropy_score?: number | null
+          error_messages?: string[] | null
+          false_positive_reason?: string | null
+          fragment?: string | null
+          full_request?: string | null
+          host?: string | null
+          http_method?: string | null
+          http_status_code?: number | null
+          http_version?: string | null
+          id?: string
+          is_proxy?: boolean | null
+          is_tor?: boolean | null
+          is_vpn?: boolean | null
+          location?: string | null
+          matched_signatures?: string[] | null
+          param_count?: number | null
+          path?: string | null
+          payload?: string | null
+          payload_decoded?: string | null
+          payload_entropy?: number | null
+          pcap_file_id?: string | null
+          query_string?: string | null
+          referer?: string | null
+          request_count_in_session?: number | null
+          response_contains_data?: boolean | null
+          response_size?: number | null
+          response_time_ms?: number | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          scheme?: string | null
+          session_id?: string | null
+          severity: string
+          source_ip: unknown
+          source_port?: number | null
+          special_char_count?: number | null
+          status: string
+          success_indicators?: Json | null
+          suspicious_patterns?: Json | null
+          target_url: string
+          time_since_last_request?: number | null
+          timestamp?: string
+          updated_at?: string | null
+          url_length?: number | null
+          user_agent?: string | null
+        }
+        Update: {
+          accept_header?: string | null
+          analyst_notes?: string | null
+          asn?: number | null
+          asn_org?: string | null
+          attack_subtype?: string | null
+          attack_type?: string
+          authorization_header?: string | null
+          confidence_score?: number | null
+          content_type?: string | null
+          cookies?: Json | null
+          country_code?: string | null
+          created_at?: string | null
+          custom_headers?: Json | null
+          destination_ip?: unknown | null
+          destination_port?: number | null
+          detection_method?: string
+          entropy_score?: number | null
+          error_messages?: string[] | null
+          false_positive_reason?: string | null
+          fragment?: string | null
+          full_request?: string | null
+          host?: string | null
+          http_method?: string | null
+          http_status_code?: number | null
+          http_version?: string | null
+          id?: string
+          is_proxy?: boolean | null
+          is_tor?: boolean | null
+          is_vpn?: boolean | null
+          location?: string | null
+          matched_signatures?: string[] | null
+          param_count?: number | null
+          path?: string | null
+          payload?: string | null
+          payload_decoded?: string | null
+          payload_entropy?: number | null
+          pcap_file_id?: string | null
+          query_string?: string | null
+          referer?: string | null
+          request_count_in_session?: number | null
+          response_contains_data?: boolean | null
+          response_size?: number | null
+          response_time_ms?: number | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          scheme?: string | null
+          session_id?: string | null
+          severity?: string
+          source_ip?: unknown
+          source_port?: number | null
+          special_char_count?: number | null
+          status?: string
+          success_indicators?: Json | null
+          suspicious_patterns?: Json | null
+          target_url?: string
+          time_since_last_request?: number | null
+          timestamp?: string
+          updated_at?: string | null
+          url_length?: number | null
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_attack_records_pcap_file"
+            columns: ["pcap_file_id"]
+            isOneToOne: false
+            referencedRelation: "pcap_files"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       attack_signatures: {
         Row: {
           attack_type: Database["public"]["Enums"]["attack_type"]
@@ -635,6 +871,95 @@ export type Database = {
         }
         Relationships: []
       }
+      case_notes: {
+        Row: {
+          case_id: string | null
+          created_at: string | null
+          created_by: string | null
+          id: string
+          note: string
+          note_type: string | null
+        }
+        Insert: {
+          case_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          note: string
+          note_type?: string | null
+        }
+        Update: {
+          case_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          note?: string
+          note_type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "case_notes_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "cases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cases: {
+        Row: {
+          assigned_to: string | null
+          case_number: string
+          closed_at: string | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          evidence_files: string[] | null
+          id: string
+          priority: number | null
+          related_attacks: string[] | null
+          severity: string
+          status: string
+          tags: string[] | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          assigned_to?: string | null
+          case_number: string
+          closed_at?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          evidence_files?: string[] | null
+          id?: string
+          priority?: number | null
+          related_attacks?: string[] | null
+          severity: string
+          status: string
+          tags?: string[] | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          assigned_to?: string | null
+          case_number?: string
+          closed_at?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          evidence_files?: string[] | null
+          id?: string
+          priority?: number | null
+          related_attacks?: string[] | null
+          severity?: string
+          status?: string
+          tags?: string[] | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       collection_events: {
         Row: {
           blockchain_tx_hash: string | null
@@ -979,6 +1304,135 @@ export type Database = {
           },
         ]
       }
+      detected_events: {
+        Row: {
+          asn: number | null
+          attack_subtype: string | null
+          attack_type: string
+          canonical_url: string | null
+          confidence: number
+          country_code: string | null
+          created_at: string
+          dst_ip: unknown | null
+          headers: Json | null
+          host: string
+          id: string
+          indicators: Json | null
+          is_tor: boolean | null
+          matched_patterns: string[] | null
+          method: string
+          path: string
+          query_params: Json | null
+          raw_url: string
+          response_code: number | null
+          response_size: number | null
+          session_id: string | null
+          severity: string
+          src_ip: unknown
+          status: string
+          timestamp: string
+          user_agent: string | null
+        }
+        Insert: {
+          asn?: number | null
+          attack_subtype?: string | null
+          attack_type: string
+          canonical_url?: string | null
+          confidence: number
+          country_code?: string | null
+          created_at?: string
+          dst_ip?: unknown | null
+          headers?: Json | null
+          host: string
+          id?: string
+          indicators?: Json | null
+          is_tor?: boolean | null
+          matched_patterns?: string[] | null
+          method: string
+          path: string
+          query_params?: Json | null
+          raw_url: string
+          response_code?: number | null
+          response_size?: number | null
+          session_id?: string | null
+          severity: string
+          src_ip: unknown
+          status: string
+          timestamp?: string
+          user_agent?: string | null
+        }
+        Update: {
+          asn?: number | null
+          attack_subtype?: string | null
+          attack_type?: string
+          canonical_url?: string | null
+          confidence?: number
+          country_code?: string | null
+          created_at?: string
+          dst_ip?: unknown | null
+          headers?: Json | null
+          host?: string
+          id?: string
+          indicators?: Json | null
+          is_tor?: boolean | null
+          matched_patterns?: string[] | null
+          method?: string
+          path?: string
+          query_params?: Json | null
+          raw_url?: string
+          response_code?: number | null
+          response_size?: number | null
+          session_id?: string | null
+          severity?: string
+          src_ip?: unknown
+          status?: string
+          timestamp?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
+      export_jobs: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          error_message: string | null
+          file_path: string | null
+          file_size: number | null
+          filters: Json
+          id: string
+          job_type: string
+          record_count: number | null
+          requested_by: string | null
+          status: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          error_message?: string | null
+          file_path?: string | null
+          file_size?: number | null
+          filters?: Json
+          id?: string
+          job_type: string
+          record_count?: number | null
+          requested_by?: string | null
+          status: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          error_message?: string | null
+          file_path?: string | null
+          file_size?: number | null
+          filters?: Json
+          id?: string
+          job_type?: string
+          record_count?: number | null
+          requested_by?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
       facilities: {
         Row: {
           accepted_waste_types:
@@ -1186,6 +1640,51 @@ export type Database = {
           source_ip?: unknown
           timestamp?: string
           url?: string
+        }
+        Relationships: []
+      }
+      ip_reputation: {
+        Row: {
+          attack_count: number | null
+          created_at: string | null
+          first_seen: string | null
+          id: string
+          ip_address: unknown
+          is_malicious: boolean | null
+          last_seen: string | null
+          notes: string | null
+          reputation_score: number | null
+          sources: string[] | null
+          threat_types: string[] | null
+          updated_at: string | null
+        }
+        Insert: {
+          attack_count?: number | null
+          created_at?: string | null
+          first_seen?: string | null
+          id?: string
+          ip_address: unknown
+          is_malicious?: boolean | null
+          last_seen?: string | null
+          notes?: string | null
+          reputation_score?: number | null
+          sources?: string[] | null
+          threat_types?: string[] | null
+          updated_at?: string | null
+        }
+        Update: {
+          attack_count?: number | null
+          created_at?: string | null
+          first_seen?: string | null
+          id?: string
+          ip_address?: unknown
+          is_malicious?: boolean | null
+          last_seen?: string | null
+          notes?: string | null
+          reputation_score?: number | null
+          sources?: string[] | null
+          threat_types?: string[] | null
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -1545,6 +2044,60 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      pcap_files: {
+        Row: {
+          attacks_detected: number | null
+          error_message: string | null
+          file_hash: string
+          file_size: number
+          filename: string
+          http_packets: number | null
+          id: string
+          processed_at: string | null
+          processing_progress: number | null
+          processing_time_ms: number | null
+          storage_path: string
+          total_packets: number | null
+          upload_status: string
+          uploaded_at: string | null
+          uploaded_by: string | null
+        }
+        Insert: {
+          attacks_detected?: number | null
+          error_message?: string | null
+          file_hash: string
+          file_size: number
+          filename: string
+          http_packets?: number | null
+          id?: string
+          processed_at?: string | null
+          processing_progress?: number | null
+          processing_time_ms?: number | null
+          storage_path: string
+          total_packets?: number | null
+          upload_status: string
+          uploaded_at?: string | null
+          uploaded_by?: string | null
+        }
+        Update: {
+          attacks_detected?: number | null
+          error_message?: string | null
+          file_hash?: string
+          file_size?: number
+          filename?: string
+          http_packets?: number | null
+          id?: string
+          processed_at?: string | null
+          processing_progress?: number | null
+          processing_time_ms?: number | null
+          storage_path?: string
+          total_packets?: number | null
+          upload_status?: string
+          uploaded_at?: string | null
+          uploaded_by?: string | null
+        }
+        Relationships: []
       }
       pcap_uploads: {
         Row: {
@@ -2484,6 +3037,30 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          granted_at: string | null
+          granted_by: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          granted_at?: string | null
+          granted_by?: string | null
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          granted_at?: string | null
+          granted_by?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_sessions: {
         Row: {
           created_at: string | null
@@ -3066,6 +3643,14 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      correlate_attacks: {
+        Args: { attack_id: string }
+        Returns: {
+          id: string
+          reason: string
+          similarity_score: number
+        }[]
+      }
       create_audit_log: {
         Args: {
           p_action: string
@@ -3119,6 +3704,10 @@ export type Database = {
         Returns: string
       }
       generate_batch_qr_code: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      generate_case_number: {
         Args: Record<PropertyKey, never>
         Returns: string
       }
@@ -3354,6 +3943,10 @@ export type Database = {
         Args: { "": string }
         Returns: unknown
       }
+      get_dashboard_stats: {
+        Args: { end_date: string; start_date: string }
+        Returns: Json
+      }
       get_proj4_from_srid: {
         Args: { "": number }
         Returns: string
@@ -3361,6 +3954,10 @@ export type Database = {
       get_system_overview: {
         Args: Record<PropertyKey, never>
         Returns: Json
+      }
+      get_user_roles: {
+        Args: { _user_id: string }
+        Returns: string[]
       }
       gettransactionid: {
         Args: Record<PropertyKey, never>
@@ -3393,6 +3990,13 @@ export type Database = {
       gtrgm_out: {
         Args: { "": unknown }
         Returns: unknown
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
       }
       is_collection_season_valid: {
         Args: { p_collection_date?: string; p_species_id: string }
@@ -4731,6 +5335,16 @@ export type Database = {
       }
     }
     Enums: {
+      app_role:
+        | "admin"
+        | "analyst"
+        | "viewer"
+        | "collector"
+        | "lab"
+        | "processor"
+        | "manufacturer"
+        | "consumer"
+        | "regulator"
       attack_status: "attempted" | "successful" | "blocked"
       attack_type:
         | "typosquatting"
@@ -4904,6 +5518,17 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: [
+        "admin",
+        "analyst",
+        "viewer",
+        "collector",
+        "lab",
+        "processor",
+        "manufacturer",
+        "consumer",
+        "regulator",
+      ],
       attack_status: ["attempted", "successful", "blocked"],
       attack_type: [
         "typosquatting",
