@@ -248,6 +248,7 @@ export type Database = {
           country_code: string | null
           created_at: string | null
           custom_headers: Json | null
+          decoded_url: string | null
           destination_ip: unknown | null
           destination_port: number | null
           detection_method: string
@@ -265,6 +266,7 @@ export type Database = {
           is_tor: boolean | null
           is_vpn: boolean | null
           location: string | null
+          matched_patterns: string[] | null
           matched_signatures: string[] | null
           param_count: number | null
           path: string | null
@@ -288,6 +290,7 @@ export type Database = {
           special_char_count: number | null
           status: string
           success_indicators: Json | null
+          suspicious_indicators: Json | null
           suspicious_patterns: Json | null
           target_url: string
           time_since_last_request: number | null
@@ -310,6 +313,7 @@ export type Database = {
           country_code?: string | null
           created_at?: string | null
           custom_headers?: Json | null
+          decoded_url?: string | null
           destination_ip?: unknown | null
           destination_port?: number | null
           detection_method: string
@@ -327,6 +331,7 @@ export type Database = {
           is_tor?: boolean | null
           is_vpn?: boolean | null
           location?: string | null
+          matched_patterns?: string[] | null
           matched_signatures?: string[] | null
           param_count?: number | null
           path?: string | null
@@ -350,6 +355,7 @@ export type Database = {
           special_char_count?: number | null
           status: string
           success_indicators?: Json | null
+          suspicious_indicators?: Json | null
           suspicious_patterns?: Json | null
           target_url: string
           time_since_last_request?: number | null
@@ -372,6 +378,7 @@ export type Database = {
           country_code?: string | null
           created_at?: string | null
           custom_headers?: Json | null
+          decoded_url?: string | null
           destination_ip?: unknown | null
           destination_port?: number | null
           detection_method?: string
@@ -389,6 +396,7 @@ export type Database = {
           is_tor?: boolean | null
           is_vpn?: boolean | null
           location?: string | null
+          matched_patterns?: string[] | null
           matched_signatures?: string[] | null
           param_count?: number | null
           path?: string | null
@@ -412,6 +420,7 @@ export type Database = {
           special_char_count?: number | null
           status?: string
           success_indicators?: Json | null
+          suspicious_indicators?: Json | null
           suspicious_patterns?: Json | null
           target_url?: string
           time_since_last_request?: number | null
@@ -1391,6 +1400,68 @@ export type Database = {
         }
         Relationships: []
       }
+      export_certifications: {
+        Row: {
+          batch_id: string
+          certificate_number: string
+          certificate_type: string
+          certificate_url: string | null
+          certification_body: string
+          created_at: string | null
+          destination_country: string
+          expiry_date: string
+          export_date: string
+          id: string
+          issuer_id: string
+          metadata: Json | null
+          status: string
+          updated_at: string | null
+          verification_code: string
+        }
+        Insert: {
+          batch_id: string
+          certificate_number: string
+          certificate_type: string
+          certificate_url?: string | null
+          certification_body: string
+          created_at?: string | null
+          destination_country: string
+          expiry_date: string
+          export_date: string
+          id?: string
+          issuer_id: string
+          metadata?: Json | null
+          status?: string
+          updated_at?: string | null
+          verification_code: string
+        }
+        Update: {
+          batch_id?: string
+          certificate_number?: string
+          certificate_type?: string
+          certificate_url?: string | null
+          certification_body?: string
+          created_at?: string | null
+          destination_country?: string
+          expiry_date?: string
+          export_date?: string
+          id?: string
+          issuer_id?: string
+          metadata?: Json | null
+          status?: string
+          updated_at?: string | null
+          verification_code?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "export_certifications_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batches"
+            referencedColumns: ["batch_id"]
+          },
+        ]
+      }
       export_jobs: {
         Row: {
           completed_at: string | null
@@ -1685,6 +1756,45 @@ export type Database = {
           sources?: string[] | null
           threat_types?: string[] | null
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      ipfs_uploads: {
+        Row: {
+          created_at: string | null
+          file_name: string
+          file_size: number | null
+          file_type: string
+          id: string
+          ipfs_hash: string
+          metadata: Json | null
+          related_record_id: string | null
+          related_table: string | null
+          uploaded_by: string
+        }
+        Insert: {
+          created_at?: string | null
+          file_name: string
+          file_size?: number | null
+          file_type: string
+          id?: string
+          ipfs_hash: string
+          metadata?: Json | null
+          related_record_id?: string | null
+          related_table?: string | null
+          uploaded_by: string
+        }
+        Update: {
+          created_at?: string | null
+          file_name?: string
+          file_size?: number | null
+          file_type?: string
+          id?: string
+          ipfs_hash?: string
+          metadata?: Json | null
+          related_record_id?: string | null
+          related_table?: string | null
+          uploaded_by?: string
         }
         Relationships: []
       }
@@ -2045,11 +2155,50 @@ export type Database = {
           },
         ]
       }
+      offline_sync_queue: {
+        Row: {
+          created_at: string | null
+          error_message: string | null
+          id: string
+          operation: string
+          record_data: Json
+          retry_count: number | null
+          sync_status: string | null
+          synced_at: string | null
+          table_name: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          operation: string
+          record_data: Json
+          retry_count?: number | null
+          sync_status?: string | null
+          synced_at?: string | null
+          table_name: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          operation?: string
+          record_data?: Json
+          retry_count?: number | null
+          sync_status?: string | null
+          synced_at?: string | null
+          table_name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       pcap_files: {
         Row: {
           attacks_detected: number | null
           error_message: string | null
-          file_hash: string
+          file_hash: string | null
           file_size: number
           filename: string
           http_packets: number | null
@@ -2057,7 +2206,7 @@ export type Database = {
           processed_at: string | null
           processing_progress: number | null
           processing_time_ms: number | null
-          storage_path: string
+          storage_path: string | null
           total_packets: number | null
           upload_status: string
           uploaded_at: string | null
@@ -2066,7 +2215,7 @@ export type Database = {
         Insert: {
           attacks_detected?: number | null
           error_message?: string | null
-          file_hash: string
+          file_hash?: string | null
           file_size: number
           filename: string
           http_packets?: number | null
@@ -2074,7 +2223,7 @@ export type Database = {
           processed_at?: string | null
           processing_progress?: number | null
           processing_time_ms?: number | null
-          storage_path: string
+          storage_path?: string | null
           total_packets?: number | null
           upload_status: string
           uploaded_at?: string | null
@@ -2083,7 +2232,7 @@ export type Database = {
         Update: {
           attacks_detected?: number | null
           error_message?: string | null
-          file_hash?: string
+          file_hash?: string | null
           file_size?: number
           filename?: string
           http_packets?: number | null
@@ -2091,7 +2240,7 @@ export type Database = {
           processed_at?: string | null
           processing_progress?: number | null
           processing_time_ms?: number | null
-          storage_path?: string
+          storage_path?: string | null
           total_packets?: number | null
           upload_status?: string
           uploaded_at?: string | null
@@ -2328,7 +2477,6 @@ export type Database = {
           organization: string | null
           permissions: Json | null
           phone: string | null
-          role: Database["public"]["Enums"]["user_role"]
           settings: Json | null
           updated_at: string
           user_id: string
@@ -2351,7 +2499,6 @@ export type Database = {
           organization?: string | null
           permissions?: Json | null
           phone?: string | null
-          role?: Database["public"]["Enums"]["user_role"]
           settings?: Json | null
           updated_at?: string
           user_id: string
@@ -2374,7 +2521,6 @@ export type Database = {
           organization?: string | null
           permissions?: Json | null
           phone?: string | null
-          role?: Database["public"]["Enums"]["user_role"]
           settings?: Json | null
           updated_at?: string
           user_id?: string
@@ -2532,6 +2678,8 @@ export type Database = {
           blockchain_tx_hash: string | null
           created_at: string
           id: string
+          ipfs_certificate_hash: string | null
+          ipfs_results_hash: string | null
           lab_certificate_path: string | null
           lab_id: string
           lab_signature: string | null
@@ -2545,6 +2693,8 @@ export type Database = {
           blockchain_tx_hash?: string | null
           created_at?: string
           id?: string
+          ipfs_certificate_hash?: string | null
+          ipfs_results_hash?: string | null
           lab_certificate_path?: string | null
           lab_id: string
           lab_signature?: string | null
@@ -2558,6 +2708,8 @@ export type Database = {
           blockchain_tx_hash?: string | null
           created_at?: string
           id?: string
+          ipfs_certificate_hash?: string | null
+          ipfs_results_hash?: string | null
           lab_certificate_path?: string | null
           lab_id?: string
           lab_signature?: string | null
@@ -2798,6 +2950,45 @@ export type Database = {
         }
         Relationships: []
       }
+      sms_notifications: {
+        Row: {
+          created_at: string | null
+          delivered_at: string | null
+          error_message: string | null
+          id: string
+          message: string
+          phone_number: string
+          provider_message_id: string | null
+          sent_at: string | null
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          delivered_at?: string | null
+          error_message?: string | null
+          id?: string
+          message: string
+          phone_number: string
+          provider_message_id?: string | null
+          sent_at?: string | null
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          delivered_at?: string | null
+          error_message?: string | null
+          id?: string
+          message?: string
+          phone_number?: string
+          provider_message_id?: string | null
+          sent_at?: string | null
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       spatial_ref_sys: {
         Row: {
           auth_name: string | null
@@ -2970,7 +3161,6 @@ export type Database = {
           is_mandatory: boolean | null
           language_code: string
           quiz_questions: Json | null
-          target_role: Database["public"]["Enums"]["user_role"]
           title: string
           version: number | null
         }
@@ -2984,7 +3174,6 @@ export type Database = {
           is_mandatory?: boolean | null
           language_code?: string
           quiz_questions?: Json | null
-          target_role: Database["public"]["Enums"]["user_role"]
           title: string
           version?: number | null
         }
@@ -2998,7 +3187,6 @@ export type Database = {
           is_mandatory?: boolean | null
           language_code?: string
           quiz_questions?: Json | null
-          target_role?: Database["public"]["Enums"]["user_role"]
           title?: string
           version?: number | null
         }
@@ -5369,14 +5557,6 @@ export type Database = {
       report_status: "open" | "assigned" | "in_progress" | "resolved" | "closed"
       severity_level: "critical" | "high" | "medium" | "low" | "info"
       training_status: "not_started" | "in_progress" | "completed" | "expired"
-      user_role:
-        | "collector"
-        | "lab"
-        | "processor"
-        | "manufacturer"
-        | "admin"
-        | "consumer"
-        | "regulator"
       waste_category:
         | "wet_organic"
         | "dry_recyclable"
@@ -5555,15 +5735,6 @@ export const Constants = {
       report_status: ["open", "assigned", "in_progress", "resolved", "closed"],
       severity_level: ["critical", "high", "medium", "low", "info"],
       training_status: ["not_started", "in_progress", "completed", "expired"],
-      user_role: [
-        "collector",
-        "lab",
-        "processor",
-        "manufacturer",
-        "admin",
-        "consumer",
-        "regulator",
-      ],
       waste_category: [
         "wet_organic",
         "dry_recyclable",

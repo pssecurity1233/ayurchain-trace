@@ -44,7 +44,7 @@ const ProfileSetup = () => {
           user_id: user?.id,
           name: profileData.name,
           phone: profileData.phone,
-          role: profileData.role as Database['public']['Enums']['user_role'],
+          // Note: role stored in user_roles table, not profiles
           organization: profileData.organization,
           address: profileData.address,
           license_number: profileData.license_number
