@@ -76,14 +76,13 @@ const AdminDashboard = () => {
 
   const loadAdminData = async () => {
     try {
-      // Load user profiles - real data
+      // Load user profiles with roles from user_roles table
       const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .select(`
           id,
           user_id,
           name,
-          role,
           created_at,
           last_login,
           verification_status,
@@ -93,12 +92,25 @@ const AdminDashboard = () => {
 
       if (profileError) throw profileError;
 
+      // Fetch roles for all users
+      const { data: rolesData } = await supabase
+        .from('user_roles')
+        .select('user_id, role');
+
+      // Create a map of user_id to role
+      const userRolesMap = new Map<string, string>();
+      (rolesData || []).forEach(ur => {
+        if (!userRolesMap.has(ur.user_id)) {
+          userRolesMap.set(ur.user_id, ur.role);
+        }
+      });
+
       // Transform profile data to UserData format
       const transformedUsers: UserData[] = (profileData || []).map(profile => ({
         id: profile.user_id,
         name: profile.name || 'Unknown',
         email: `user-${profile.user_id.slice(0, 8)}@ayurtrace.com`, // Mock email
-        role: profile.role,
+        role: userRolesMap.get(profile.user_id) || 'user',
         status: profile.is_verified ? 'active' : 'pending',
         created_at: profile.created_at,
         last_login: profile.last_login,
