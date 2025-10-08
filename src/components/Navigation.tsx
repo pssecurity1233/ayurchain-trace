@@ -39,17 +39,20 @@ const Navigation = () => {
           ...baseItems,
           { path: '/collector-dashboard', icon: Leaf, label: 'Dashboard' },
           { path: '/collect', icon: QrCode, label: 'New Collection' },
+          { path: '/analytics', icon: BarChart3, label: 'Analytics' },
         ];
       case 'lab':
         return [
           ...baseItems,
           { path: '/lab-dashboard', icon: FlaskConical, label: 'Lab Dashboard' },
           { path: '/lab', icon: BarChart3, label: 'Quality Control' },
+          { path: '/analytics', icon: BarChart3, label: 'Analytics' },
         ];
       case 'manufacturer':
         return [
           ...baseItems,
           { path: '/manufacturer-dashboard', icon: Building2, label: 'Manufacturing' },
+          { path: '/analytics', icon: BarChart3, label: 'Analytics' },
         ];
       case 'processor':
         return [
@@ -71,6 +74,7 @@ const Navigation = () => {
         return [
           ...baseItems,
           { path: '/admin-dashboard', icon: BarChart3, label: 'Admin Panel' },
+          { path: '/analytics', icon: BarChart3, label: 'Analytics' },
           { path: '/scan', icon: QrCode, label: 'Scanner' },
         ];
       default:

@@ -23,6 +23,7 @@ import RegulatorDashboard from './pages/RegulatorDashboard';
 import NotFound from './pages/NotFound';
 import Unauthorized from './pages/Unauthorized';
 import ProfileSetup from './pages/ProfileSetup';
+import Analytics from './pages/Analytics';
 
 const queryClient = new QueryClient();
 
@@ -149,6 +150,12 @@ const AppContent = () => {
         <Route path="/lab" element={
           <ProtectedRoute allowedRoles={['lab']}>
             <Laboratory />
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/analytics" element={
+          <ProtectedRoute>
+            <Analytics />
           </ProtectedRoute>
         } />
         
